@@ -7,9 +7,9 @@ UResult = TypeVar("UResult")
 
 
 class UseCase(
-    Generic[_UCommand, UResult],
+    Generic[UCommand, UResult],
     ABC,
 ):
     @abstractmethod
-    def act(self, command: _UCommand) -> UResult:
+    def act(self, command: UCommand) -> UResult:
         ...
