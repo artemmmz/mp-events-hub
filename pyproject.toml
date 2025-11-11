@@ -7,5 +7,6 @@ requires-python = ">=3.12"
 dependencies = [
     "bcrypt>=5.0.0",
     "pre-commit>=4.3.0",
+    "sqlalchemy>=2.0.44",
     "uuid-utils>=0.11.1",
 ]
