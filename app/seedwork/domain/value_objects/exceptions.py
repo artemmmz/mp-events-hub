@@ -1,53 +1,20 @@
-from abc import (
-    ABC,
-    abstractmethod,
-)
 from dataclasses import dataclass
 
-from seedwork.domain.exception import DomainException
+from seedwork.domain.value_objects.common.base import ValueType
+from seedwork.domain.value_objects.common.exceptions import ValueException
 
 
-@dataclass(eq=False)
-class ValueException(
-    DomainException,
-    ABC,
-):
-    @property
-    @abstractmethod
+@dataclass
+class GroupNumberFormatException(ValueException):
+    group_number: ValueType
+
     def message(self) -> str:
-        message = f"Value object exception!"
-
-        return message
+        return f"Номер группы должен соответствовать формату 123-456, получено: {self.group_number}"
 
 
-@dataclass(eq=False)
-class EmptyValueException(ValueException):
-    @property
+@dataclass
+class EmailFormatException(ValueException):
+    email: ValueType
+
     def message(self) -> str:
-        message = f"Value cannot be empty!"
-
-        return message
-
-
-@dataclass(eq=False)
-class ValueTooLongException(ValueException):
-    _max_len: int
-    current_len: int
-
-    @property
-    def message(self) -> str:
-        message = f"Value too long! Current len {self.current_len}, max len {self._max_len}"
-
-        return message
-
-
-@dataclass(eq=False)
-class ValueTooShortException(ValueException):
-    _min_len: int
-    current_len: int
-
-    @property
-    def message(self) -> str:
-        message = f"Value too short! Current len {self.current_len}, min len {self._min_len}"
-
-        return message
+        return f"Неправильный формат почты: {self.email}"

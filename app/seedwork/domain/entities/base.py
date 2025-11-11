@@ -8,7 +8,9 @@ from datetime import (
     timezone,
 )
 
-from seedwork.domain.value_objects.entity import EntityIdValue
+from uuid_utils import uuid7
+
+from seedwork.domain.value_objects.common.entity import EntityIdValue
 
 
 @dataclass(
@@ -16,7 +18,10 @@ from seedwork.domain.value_objects.entity import EntityIdValue
     slots=True,
 )
 class Entity(ABC):
-    id: EntityIdValue = field(repr=False)
+    id: EntityIdValue = field(
+        default_factory=uuid7,
+        repr=False,
+    )
 
     @property
     def get_id(self) -> EntityIdValue:
@@ -25,11 +30,11 @@ class Entity(ABC):
     def __hash__(self) -> int:
         return hash(self.id.get_value)
 
-    def __eq__(self, __other: "Entity") -> bool:
-        if not isinstance(__other, Entity):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Entity):
             raise NotImplementedError
 
-        return self.id == __other.id
+        return self.id == other.id
 
 
 @dataclass(

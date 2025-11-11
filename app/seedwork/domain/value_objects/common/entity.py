@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from seedwork.domain.value_objects.base import BaseSimpleValueObject
+from seedwork.domain.value_objects.common.base import BaseSimpleValueObject
 
 
 @dataclass(

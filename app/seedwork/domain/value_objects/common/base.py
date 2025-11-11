@@ -9,7 +9,7 @@ from typing import (
     TypeVar,
 )
 
-from domain.seedwork.value_objects.exception import EmptyValueException
+from seedwork.domain.value_objects.common.exceptions import EmptyValueException
 
 
 @dataclass(
@@ -17,7 +17,7 @@ from domain.seedwork.value_objects.exception import EmptyValueException
     slots=True,
 )
 class BaseValueObject(ABC):
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.validate()
 
     @abstractmethod
@@ -46,11 +46,11 @@ class BaseSimpleValueObject(
     def get_value(self) -> ValueType:
         return self._value
 
-    def __eq__(self, __value: "BaseSimpleValueObject") -> bool:
-        if not isinstance(__value, BaseSimpleValueObject):
-            raise NotImplemented
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BaseSimpleValueObject):
+            raise NotImplementedError
 
-        return self._value == __value
+        return self._value == other._value
 
 
 @dataclass(
