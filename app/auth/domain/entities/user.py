@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import bcrypt
 
+from auth.domain.value_object.roles import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
 
@@ -13,6 +14,7 @@ class User(BaseAggregate):
     group_number: GroupNumberValue
     email: EmailValue
     hash_password: bytes
+    role: RoleValue
 
     @classmethod
     def create(
@@ -22,6 +24,7 @@ class User(BaseAggregate):
         group_number: str,
         email: str,
         password: str,
+        role: RoleValue,
     ) -> "User":
         hash_password: bytes = cls._hash_password(password=password)
 
@@ -31,6 +34,7 @@ class User(BaseAggregate):
             group_number=GroupNumberValue(_value=group_number),
             email=EmailValue(_value=email),
             hash_password=hash_password,
+            role=role,
         )
 
     def check_password(self, password: str) -> bool:
