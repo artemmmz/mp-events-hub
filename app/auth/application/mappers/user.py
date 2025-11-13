@@ -15,7 +15,7 @@ class UserMapper(BaseMapper):
         role: RoleOrm = self._role_mapper.to_orm(role=user.role)
 
         return UserOrm(
-            aggregate_id=user.id,
+            uid=user.id.value,
             name=user.name.value,
             second_name=user.second_name.value,
             group_number=user.group_number.value,

@@ -23,7 +23,6 @@ class UserOrm(
 ):
     __tablename__ = "users"
 
-    aggregate_id: Mapped[UUID]
     name: Mapped[str]
     second_name: Mapped[str]
     group_number: Mapped[str]
