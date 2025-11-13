@@ -43,7 +43,7 @@ class BaseSimpleValueObject(
             raise EmptyValueException()
 
     @property
-    def get_value(self) -> ValueType:
+    def value(self) -> ValueType:
         return self._value
 
     def __eq__(self, other: object) -> bool:

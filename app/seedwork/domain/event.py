@@ -11,7 +11,7 @@ from uuid import UUID
 
 from uuid_utils import uuid7
 
-from domain.seedwork.value_objects.value import EntityIdValue
+from seedwork.domain.value_objects.common.entity import EntityIdValue
 
 
 @dataclass(

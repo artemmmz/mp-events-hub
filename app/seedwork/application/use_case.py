@@ -6,7 +6,7 @@ UCommand = TypeVar("UCommand")
 UResult = TypeVar("UResult")
 
 
-class UseCase(
+class BaseUseCase(
     Generic[UCommand, UResult],
     ABC,
 ):
