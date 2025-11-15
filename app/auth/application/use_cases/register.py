@@ -10,6 +10,7 @@ from auth.domain.rules.exceptions import (
 )
 from auth.domain.value_object.roles import RoleValue
 from seedwork.application.use_case import BaseUseCase
+from seedwork.domain.value_objects.jwt import JwtTokenValue
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 
@@ -23,7 +24,7 @@ class RegisterCommand:
 
 
 class RegisterUseCase(
-    BaseUseCase[RegisterCommand, None],
+    BaseUseCase[RegisterCommand, JwtTokenValue],
 ):
     _transaction_manager: ITransactionManager
     _user_repository: IUserRepository
@@ -31,7 +32,7 @@ class RegisterUseCase(
     _unique_user_rule: UniqueUserRule
     _jwt_manager: JwtService
 
-    async def act(self, command: RegisterCommand) -> None:
+    async def act(self, command: RegisterCommand) -> JwtTokenValue:
         user: User = User.create(
             name=command.name,
             second_name=command.second_name,
@@ -57,9 +58,11 @@ class RegisterUseCase(
 
         await self._user_repository.create(entity=user)
 
-        token: str = self._jwt_manager.issue_token()
+        token: JwtTokenValue = self._jwt_manager.issue_token(
+            payload={"user_id": user.id.value},
+        )
 
         await self._transaction_manager.commit()
 
-        print(token) # mypy не давал закомитить типа токен не использовался
+        return token
 
