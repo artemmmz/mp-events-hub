@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import bcrypt
 
-from auth.domain.value_object.roles import RoleValue
+from modules.auth.domain.value_object.roles import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
 

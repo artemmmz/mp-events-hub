@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 
-from auth.application.services.jwt import JwtService
-from auth.domain.entities.user import User
-from auth.domain.repository.user import IUserRepository
-from auth.domain.rules.user import UniqueEmailRule, UniqueUserRule
-from auth.domain.rules.exceptions import (
+from modules.auth.application.services.jwt import JwtService
+from modules.auth.domain.entities.user import User
+from modules.auth.domain.repository.user import IUserRepository
+from modules.auth.domain.rules.user import UniqueEmailRule, UniqueUserRule
+from modules.auth.domain.rules.exceptions import (
     EmailAlreadyExistsException,
     UserAlreadyExistsException,
 )
-from auth.domain.value_object.roles import RoleValue
+from modules.auth.domain.value_object.roles import RoleValue
 from seedwork.application.use_case import BaseUseCase
 from seedwork.domain.value_objects.jwt import JwtTokenValue
 from seedwork.infra.transaction_manager.base import ITransactionManager

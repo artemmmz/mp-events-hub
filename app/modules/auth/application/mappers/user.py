@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from auth.application.mappers.role import RoleMapper
-from auth.domain.entities.user import User
+from modules.auth.application.mappers.role import RoleMapper
+from modules.auth.domain.entities.user import User
 from infra.pg.models.role import RoleOrm
 from infra.pg.models.user import UserOrm
 from seedwork.application.mapper import BaseMapper

@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 from sqlalchemy import select, exists, and_
 
-from auth.application.mappers.user import UserMapper
-from auth.domain.entities.user import User
-from auth.domain.repository.user import IUserRepository
+from modules.auth.application.mappers.user import UserMapper
+from modules.auth.domain.entities.user import User
+from modules.auth.domain.repository.user import IUserRepository
 from infra.pg.models.user import UserOrm
 from seedwork.domain.value_objects.user import EmailValue, NameValue, GroupNumberValue
 from seedwork.infra.repository.alchemy import BaseAlchemyRepository

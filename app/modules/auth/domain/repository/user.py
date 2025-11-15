@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from auth.domain.entities.user import User
+from modules.auth.domain.entities.user import User
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
 from seedwork.domain.repository import BaseRepository
 

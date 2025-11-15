@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from auth.domain.repository.user import IUserRepository
+from modules.auth.domain.repository.user import IUserRepository
 from seedwork.domain.rules import BusinessRule
 from seedwork.domain.value_objects.user import EmailValue, NameValue, GroupNumberValue
 
