@@ -4,6 +4,7 @@ from typing import Any, Optional
 import jwt
 
 from seedwork.application.service import BaseService
+from seedwork.domain.value_objects.jwt import JwtTokenValue
 
 
 @dataclass
@@ -12,13 +13,18 @@ class JwtService(BaseService):
     _access_token_lifetime: int
     _algorithm: str = "HS256"
 
-    def issue_token(self, payload: dict[str, Any]) -> str:
-        exp: datetime = datetime.now(tz=timezone.utc) + timedelta(seconds=self._access_token_lifetime)
+    def issue_token(self, payload: dict[str, Any]) -> JwtTokenValue:
+        exp: datetime = (
+            datetime.now(tz=timezone.utc) + timedelta(seconds=self._access_token_lifetime)
+        )
         to_encode = payload.copy()
         to_encode["exp"] = exp
-        return jwt.encode(to_encode, self._secret_key, algorithm=self._algorithm)
 
-    def decode_token(self, token: str) -> Optional[dict[str, Any]]:
+        token: str = jwt.encode(to_encode, self._secret_key, algorithm=self._algorithm)
+
+        return JwtTokenValue(_value=token)
+
+    def decode_token(self, token: JwtTokenValue) -> Optional[dict[str, Any]]:
         """
         Возвращает payload, если токен валиден, иначе None.
         """
