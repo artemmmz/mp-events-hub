@@ -2,7 +2,10 @@ from dishka import FromDishka
 from fastapi import APIRouter, Response
 from starlette.status import HTTP_201_CREATED
 
-from delivery.api.v1.auth.schemas import RegisterInSchema, RegisterOutSchema
+from delivery.api.v1.auth.schemas import (
+    RegisterInSchema,
+    RegisterOutSchema,
+)
 from modules.auth.application.use_cases.register import (
     RegisterUseCase,
     RegisterCommand,
