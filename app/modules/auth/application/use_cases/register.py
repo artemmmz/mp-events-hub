@@ -23,6 +23,7 @@ class RegisterCommand:
     password: str
 
 
+@dataclass
 class RegisterUseCase(
     BaseUseCase[RegisterCommand, JwtTokenValue],
 ):
