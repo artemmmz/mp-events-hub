@@ -1,23 +1,31 @@
-from dataclasses import dataclass
-
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 
-@dataclass
-class Settings(BaseSettings):
-    pg: "PgSettings"
-
-
 class PgSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".dev.env")
-
-    db: str = Field(alias="POSTGRES_DB", default="POSTGRES_DB")
-    user: str = Field(alias="POSTGRES_USER", default="POSTGRES_USER")
-    password: str = Field(alias="POSTGRES_PASSWORD", default="POSTGRES_PASSWORD")
-    host: str = Field(alias="POSTGRES_HOST", default="POSTGRES_HOST")
-    port: str = Field(alias="POSTGRES_PORT", default="POSTGRES_PORT")
+    db: str = Field(default="events-hub", alias="PG__DB")
+    user: str = Field(default="admin", alias="PG__USER")
+    password: str = Field(default="admin", alias="PG__PASSWORD")
+    host: str = Field(default="events-hub", alias="PG__HOST")
+    port: str = Field(default="5432", alias="PG__PORT")
 
     @property
     def postgres_url(self) -> str:
-        return rf"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
+        return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
+
+
+class AuthSettings(BaseSettings):
+    secret_key: str = Field(default="", alias="AUTH__SECRET_KEY")
+    access_token_lifetime: int = Field(default=5_000_000_000, alias="AUTH__ACCESS_TOKEN_LIFETIME")
+    algorithm: str = Field(default="sha256", alias="AUTH__ALGORITHM")
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
+    pg: PgSettings = PgSettings()
+    auth: AuthSettings = AuthSettings()
