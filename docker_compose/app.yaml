@@ -1,0 +1,18 @@
+services:
+  app:
+    container_name: app
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: app
+    env_file:
+      - ../.dev.env
+    ports:
+      - "8000:8000"
+    command: "uv run uvicorn bootstrap.main:main --host 0.0.0.0 --factory"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
