@@ -1,4 +1,8 @@
-from dishka import FromDishka
+from dishka.integrations.fastapi import (
+    DishkaRoute,
+    FromDishka,
+    inject,
+)
 from fastapi import APIRouter, Response
 from starlette.status import HTTP_201_CREATED
 
@@ -13,19 +17,23 @@ from modules.auth.application.use_cases.register import (
 from seedwork.domain.value_objects.jwt import JwtTokenValue
 
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(
+    prefix="/auth",
+    route_class=DishkaRoute,
+)
 
 
 @router.post(
     path="/register",
-    response_model=RegisterInSchema,
+    response_model=RegisterOutSchema,
     status_code=HTTP_201_CREATED,
     summary="",
 )
+@inject
 async def register(
     schema: RegisterInSchema,
     response: Response,
-    use_case: RegisterUseCase = FromDishka[RegisterUseCase],
+    use_case: FromDishka[RegisterUseCase],
 ) -> RegisterOutSchema:
     command = RegisterCommand(
         name=schema.name,
@@ -46,4 +54,4 @@ async def register(
         expires="Wed, 31 Dec 2137 23:59:59 GMT",
     )
 
-    return RegisterOutSchema(token=token.value)
+    return RegisterOutSchema(token="token.value")

@@ -5,6 +5,9 @@ from dishka import (
 )
 from dishka.integrations.fastapi import FastapiProvider
 
+from bootstrap.ioc.providers.bootstrap import(
+    SettingProvider,
+)
 from bootstrap.ioc.providers.infra import (
     AlchemyProvider,
 )
@@ -15,15 +18,20 @@ from bootstrap.ioc.providers.modules.auth import (
     ServiceAuthProvider,
     UseCaseAuthProvider,
 )
+from bootstrap.ioc.providers.seedwork.infra import (
+    TransactionManagerProvider,
+)
 
 
 DEV_PROVIDERS: list[Provider] = [
+    SettingProvider(),
     AlchemyProvider(),
-    RulesAuthProvider,
-    RepositoryAuthProvider,
-    MapperAuthProvider,
-    ServiceAuthProvider,
-    UseCaseAuthProvider,
+    RulesAuthProvider(),
+    RepositoryAuthProvider(),
+    MapperAuthProvider(),
+    ServiceAuthProvider(),
+    UseCaseAuthProvider(),
+    TransactionManagerProvider(),
     FastapiProvider(),
 ]
 

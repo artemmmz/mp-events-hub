@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from dishka import AsyncContainer
 from dishka.integrations.fastapi import setup_dishka
 
-from bootstrap import get_container
+from bootstrap.ioc import get_container
 from bootstrap.lifespan import lifespan
 from delivery.api import v1_router
 from delivery.exceptions.handler import register_exception_handlers
