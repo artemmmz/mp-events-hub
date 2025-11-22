@@ -3,8 +3,9 @@ from dishka.integrations.fastapi import (
     FromDishka,
     inject,
 )
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
 from starlette.status import HTTP_201_CREATED
+from fastapi.responses import Response
 
 from delivery.api.v1.auth.schemas import (
     RegisterInSchema,
@@ -45,13 +46,14 @@ async def register(
 
     token: JwtTokenValue = await use_case.act(command=command)
 
+    schema = RegisterOutSchema(token=token.value)
+
     response.set_cookie(
         key="access_token",
         value=token.value,
         httponly=True,
-        secure=True,
         samesite="lax",
         expires="Wed, 31 Dec 2137 23:59:59 GMT",
     )
 
-    return RegisterOutSchema(token="token.value")
+    return schema
