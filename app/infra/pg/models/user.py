@@ -29,6 +29,6 @@ class UserOrm(
     email: Mapped[str] = mapped_column(unique=True)
     hash_password: Mapped[bytes]
 
-    role: Mapped["RoleOrm"] = relationship(back_populates="user")
+    role: Mapped["RoleOrm"] = relationship(back_populates="users")
 
     role_uid: Mapped[UUID] = mapped_column(ForeignKey("roles.uid"))
