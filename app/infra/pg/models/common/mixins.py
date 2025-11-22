@@ -7,7 +7,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 
 class UidPkMixin:
-    uid: Mapped[UUID] = mapped_column(primary_key=True, default=uuid7)
+    uid: Mapped[UUID] = mapped_column(
+        primary_key=True,
+        default=uuid7,
+    )
 
 
 class CreatedAtMixin:
