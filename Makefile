@@ -3,7 +3,7 @@ EXEC = docker exec -it
 LOGS = docker logs
 ENV = --env-file .dev.env
 APP = docker_compose/app.yaml
-DB = docker_compose/db.yaml
+DB = docker_compose/pg.yaml
 
 .PHONY: app
 app:
@@ -13,10 +13,10 @@ app:
 app-down:
 	${DC} -f ${APP} ${ENV} down
 
-.PHONY: db
-db:
+.PHONY: pg
+pg:
 	${DC} -f ${DB} ${ENV} up --build -d
 
-.PHONY: db-down
-db-down:
+.PHONY: pg-down
+pg-down:
 	${DC} -f ${DB} ${ENV} down
