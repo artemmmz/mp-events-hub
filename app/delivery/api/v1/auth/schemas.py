@@ -11,3 +11,12 @@ class RegisterInSchema(BaseModel):
 
 class RegisterOutSchema(BaseModel):
     token: str
+
+
+class LoginInSchema(BaseModel):
+    email: str
+    password: str
+
+
+class LoginOutSchema(BaseModel):
+    token: str

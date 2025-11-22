@@ -25,3 +25,21 @@ class UserAlreadyExistsException(BusinessRuleException):
             f"User '{self.name.value} {self.second_name.value}' "
             f"from group '{self.group_number.value}' already exists."
         )
+
+
+@dataclass
+class UserNotFoundException(BusinessRuleException):
+    email: str
+
+    @property
+    def message(self) -> str:
+        return f"User with email '{self.email}' not found."
+
+
+@dataclass
+class InvalidPasswordException(BusinessRuleException):
+    email: str
+
+    @property
+    def message(self) -> str:
+        return f"Invalid password for user with email '{self.email}'."

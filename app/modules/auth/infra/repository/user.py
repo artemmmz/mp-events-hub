@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from sqlalchemy import select, exists, and_
+from sqlalchemy.orm import joinedload
 
 from infra.pg.models import RoleOrm
 from modules.auth.application.interface.dm import IRoleDm
@@ -58,3 +59,24 @@ class UserAlchemyRepository(
             )
         )
         return result.scalar()
+
+    async def get_by_email(
+        self,
+        email: EmailValue,
+    ) -> User | None:
+        result = await self._session.execute(
+            select(UserOrm)
+            .where(UserOrm.email == email.value)
+            .options(
+                joinedload(UserOrm.role)
+            )
+        )
+
+        user_orm: UserOrm | None = result.scalar_one_or_none()
+
+        if user_orm:
+            user: User = self._mapper.to_entity(user_orm)
+            return user
+
+        else:
+            return None

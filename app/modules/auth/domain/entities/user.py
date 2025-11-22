@@ -23,10 +23,14 @@ class User(BaseAggregate):
         second_name: str,
         group_number: str,
         email: str,
-        password: str,
+        password: str | bytes,
         role: RoleValue,
     ) -> "User":
-        hash_password: bytes = cls._hash_password(password=password)
+
+        if isinstance(password, str):
+            hash_password: bytes = cls._hash_password(password=password)
+        else:
+            hash_password = password
 
         return User(
             name=NameValue(_value=name),
