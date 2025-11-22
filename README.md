@@ -1,7 +1,63 @@
 # mp-events-hub
 Microservice built with FastAPI to retrieve TRON address information: TRX balance, bandwidth, and energy.
 
-## How to Use
+
+# About the Project
+
+**mp-events-hub** is a microservice developed as part of the large-scale project **“Moscow Polytechnic Extracurricular Activity Platform”** — a unified digital events hub designed to centralize all extracurricular activities of Moscow Polytechnic University. Its mission is to increase student engagement, simplify coordination, and build a modern interactive digital environment for event participation.
+
+
+## Project Background
+
+Event announcements within the university are currently scattered across various social networks, which creates information noise and low reach. The main communication channel — a VK community — lacks filtering by interests or dates, and its popularity among students continues to decline.
+
+This leads to low attendance and forces organizers to spend significant manual effort on promotion, especially for large events.
+
+The new digital platform solves these issues by offering:
+
+- a centralized event board for all extracurricular activities;
+- structured and unified event listings;
+- convenient search and filtering tools;
+- personalized content;
+- interactive features and elements of gamification;
+- transparent motivation and reward mechanics.
+
+The project aims to increase student involvement through a modern, unified digital ecosystem.
+
+
+## Purpose of This Microservice
+
+**mp-events-hub** handles retrieval and aggregation of TRON blockchain data, including:
+
+- TRX balance  
+- bandwidth  
+- energy  
+
+These parameters are used within the student reward system integrated into the platform. Each student connects a TRON wallet, enabling secure, transparent accrual of participation rewards based on event attendance and activity.
+
+
+## Technology Stack
+
+- **Python** — backend logic  
+- **FastAPI** — REST API  
+- **Docker** — containerization  
+- **PostgreSQL** — shared database infrastructure  
+- **Alembic** — database migrations  
+
+
+## Role in the System Architecture
+
+The full platform is developed by multiple collaborative teams:
+
+- **Backend Team** — Python/FastAPI microservices, TRON integration  
+- **Frontend Team** — HTML, CSS, JS dynamic website interface  
+- **Design Team** — UI/UX, layouts (Figma, Photoshop)  
+- **Database Team** — PostgreSQL schema design and support  
+
+**mp-events-hub** is a backend microservice that provides financial and technical data essential for the gamified reward mechanics of the platform.
+
+
+# How to Use
 
 1. **Clone the repository:**
 
