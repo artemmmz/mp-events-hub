@@ -4,6 +4,11 @@ from pydantic import Field
 
 
 class PgSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
     db: str = Field(default="events-hub", alias="PG__DB")
     user: str = Field(default="admin", alias="PG__USER")
     password: str = Field(default="admin", alias="PG__PASSWORD")
@@ -16,6 +21,11 @@ class PgSettings(BaseSettings):
 
 
 class AuthSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
     secret_key: str = Field(default="", alias="AUTH__SECRET_KEY")
     access_token_lifetime: int = Field(default=5_000_000_000, alias="AUTH__ACCESS_TOKEN_LIFETIME")
     algorithm: str = Field(default="sha256", alias="AUTH__ALGORITHM")
@@ -29,3 +39,7 @@ class Settings(BaseSettings):
 
     pg: PgSettings = PgSettings()
     auth: AuthSettings = AuthSettings()
+
+
+def get_settings() -> Settings:
+    return Settings()
