@@ -8,15 +8,19 @@ DB = docker_compose/pg.yaml
 .PHONY: app
 app:
 	${DC} -f ${APP} ${ENV} up --build -d
+	# docker compose -f docker_compose/app.yaml --env-file .dev.env up --build -d
 
 .PHONY: app-down
 app-down:
 	${DC} -f ${APP} ${ENV} down
+	# docker compose -f docker_compose/app.yaml --env-file .dev.env down
 
 .PHONY: pg
 pg:
 	${DC} -f ${DB} ${ENV} up --build -d
+	# docker compose -f docker_compose/pg.yaml --env-file .dev.env up --build -d
 
 .PHONY: pg-down
 pg-down:
 	${DC} -f ${DB} ${ENV} down
+	# docker compose -f docker_compose/pg.yaml --env-file .dev.env down
