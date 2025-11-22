@@ -17,6 +17,7 @@ from bootstrap.ioc.providers.modules.auth import (
     MapperAuthProvider,
     ServiceAuthProvider,
     UseCaseAuthProvider,
+    DMAuthProvider,
 )
 from bootstrap.ioc.providers.seedwork.infra import (
     TransactionManagerProvider,
@@ -31,6 +32,7 @@ DEV_PROVIDERS: list[Provider] = [
     MapperAuthProvider(),
     ServiceAuthProvider(),
     UseCaseAuthProvider(),
+    DMAuthProvider(),
     TransactionManagerProvider(),
     FastapiProvider(),
 ]

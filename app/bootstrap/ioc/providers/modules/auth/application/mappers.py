@@ -8,10 +8,8 @@ class MapperAuthProvider(Provider):
     scope = Scope.APP
 
     @provide
-    def user(self, role_mapper: RoleMapper) -> UserMapper:
-        return UserMapper(
-            _role_mapper=role_mapper,
-        )
+    def user(self) -> UserMapper:
+        return UserMapper()
 
     @provide
     def role(self) -> RoleMapper:

@@ -4,7 +4,10 @@ from .application import (
     ServiceAuthProvider,
 )
 from .domain import RulesAuthProvider
-from .infra import RepositoryAuthProvider
+from .infra import (
+    RepositoryAuthProvider,
+    DMAuthProvider,
+)
 
 
 __all__ = (
@@ -13,4 +16,5 @@ __all__ = (
     "UseCaseAuthProvider",
     "RulesAuthProvider",
     "RepositoryAuthProvider",
+    "DMAuthProvider",
 )
