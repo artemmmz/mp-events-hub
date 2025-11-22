@@ -10,7 +10,7 @@ class IUserRepository(
     ABC,
 ):
     @abstractmethod
-    async def create(self, entity: User) -> None:
+    async def create(self, user: User) -> None:
         ...
 
     @abstractmethod

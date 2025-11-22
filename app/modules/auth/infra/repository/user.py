@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from sqlalchemy import select, exists, and_
 
+from infra.pg.models import RoleOrm
+from modules.auth.application.interface.dm import IRoleDm
 from modules.auth.application.mappers.user import UserMapper
 from modules.auth.domain.entities.user import User
 from modules.auth.domain.repository.user import IUserRepository
@@ -16,9 +18,15 @@ class UserAlchemyRepository(
     BaseAlchemyRepository,
 ):
     _mapper: UserMapper
+    _role_dm: IRoleDm
 
-    async def create(self, entity: User) -> None:
-        user_orm: UserOrm = self._mapper.to_orm(user=entity)
+    async def create(self, user: User) -> None:
+        role_orm: RoleOrm = await (
+            self._role_dm.get_by_name(role=user.role)
+        )
+
+        user_orm: UserOrm = self._mapper.to_orm(user=user)
+        user_orm.role = role_orm
 
         self._session.add(user_orm)
 
@@ -26,7 +34,7 @@ class UserAlchemyRepository(
         result = await self._session.execute(
             select(
                 exists()
-                .where(UserOrm.email == email)
+                .where(UserOrm.email == email.value)
             )
         )
         return result.scalar()
