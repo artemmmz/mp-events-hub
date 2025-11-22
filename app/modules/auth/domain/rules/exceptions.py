@@ -29,17 +29,17 @@ class UserAlreadyExistsException(BusinessRuleException):
 
 @dataclass
 class UserNotFoundException(BusinessRuleException):
-    email: EmailValue
+    email: str
 
     @property
     def message(self) -> str:
-        return f"User with email '{self.email.value}' not found."
+        return f"User with email '{self.email}' not found."
 
 
 @dataclass
 class InvalidPasswordException(BusinessRuleException):
-    email: EmailValue
+    email: str
 
     @property
     def message(self) -> str:
-        return f"Invalid password for user with email '{self.email.value}'."
+        return f"Invalid password for user with email '{self.email}'."
