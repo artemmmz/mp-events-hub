@@ -57,10 +57,10 @@ class RegisterUseCase(
                 group_number=user.group_number,
             )
 
-        await self._user_repository.create(entity=user)
+        await self._user_repository.create(user=user)
 
         token: JwtTokenValue = self._jwt_manager.issue_token(
-            payload={"user_id": user.id.value},
+            payload={"user_id": str(user.id)},
         )
 
         await self._transaction_manager.commit()
