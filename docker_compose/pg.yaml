@@ -1,0 +1,39 @@
+services:
+  events-hub:
+    image: postgres:18-alpine
+    container_name: events-hub
+    env_file:
+      - ../.dev.env
+    environment:
+      POSTGRES_DB: ${PG__DB}
+      POSTGRES_USER: ${PG__USER}
+      POSTGRES_PASSWORD: ${PG__PASSWORD}
+    ports:
+      - "45432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - events-hub
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+  pgadmin:
+
+networks:
+  backend:
+    driver: bridge

@@ -1,0 +1,20 @@
+from dataclasses import dataclass
+
+from seedwork.domain.value_objects.common.base import ValueType
+from seedwork.domain.value_objects.common.exceptions import ValueException
+
+
+@dataclass
+class GroupNumberFormatException(ValueException):
+    group_number: ValueType
+
+    def message(self) -> str:
+        return f"Номер группы должен соответствовать формату 123-456, получено: {self.group_number}"
+
+
+@dataclass
+class EmailFormatException(ValueException):
+    email: ValueType
+
+    def message(self) -> str:
+        return f"Неправильный формат почты: {self.email}"
