@@ -25,3 +25,10 @@ class IUserRepository(
         group_number: GroupNumberValue,
     ) -> bool:
         ...
+
+    @abstractmethod
+    async def get_by_email(
+        self,
+        email: EmailValue,
+    ) -> User | None:
+        ...
