@@ -10,6 +10,7 @@ dependencies = [
     "bcrypt>=5.0.0",
     "dishka>=1.7.2",
     "fastapi>=0.121.2",
+    "faststream[rabbit]>=0.6.3",
     "greenlet>=3.2.4",
     "pre-commit>=4.3.0",
     "pydantic-settings>=2.12.0",
