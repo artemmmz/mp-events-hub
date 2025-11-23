@@ -1,5 +1,5 @@
 # mp-events-hub
-Microservice built with FastAPI to retrieve TRON address information: TRX balance, bandwidth, and energy.
+Microservice built with FastAPI for backend infrastructure within the “Moscow Polytechnic Extracurricular Activity Platform”.
 
 
 # About the Project
@@ -25,17 +25,6 @@ The new digital platform solves these issues by offering:
 The project aims to increase student involvement through a modern, unified digital ecosystem.
 
 
-## Purpose of This Microservice
-
-**mp-events-hub** handles retrieval and aggregation of TRON blockchain data, including:
-
-- TRX balance  
-- bandwidth  
-- energy  
-
-These parameters are used within the student reward system integrated into the platform. Each student connects a TRON wallet, enabling secure, transparent accrual of participation rewards based on event attendance and activity.
-
-
 ## Technology Stack
 
 - **Python** — backend logic  
@@ -49,12 +38,12 @@ These parameters are used within the student reward system integrated into the p
 
 The full platform is developed by multiple collaborative teams:
 
-- **Backend Team** — Python/FastAPI microservices, TRON integration  
+- **Backend Team** — Python/FastAPI microservices  
 - **Frontend Team** — HTML, CSS, JS dynamic website interface  
 - **Design Team** — UI/UX, layouts (Figma, Photoshop)  
 - **Database Team** — PostgreSQL schema design and support  
 
-**mp-events-hub** is a backend microservice that provides financial and technical data essential for the gamified reward mechanics of the platform.
+**mp-events-hub** is one of the backend microservices responsible for supporting the platform’s data processing and communication logic.
 
 
 # How to Use
@@ -63,20 +52,30 @@ The full platform is developed by multiple collaborative teams:
 
    ```bash
    git clone https://github.com/yoocontext/mp-events-hub.git
-2. **Start the infrastructure in Docker:**
+   ```
+
+2. **Start the infrastructure in Docker:**   
+
    ```bash
    make pg
    make app
+   ```
+   
 if you don't have `make`, you can run the commands directly from the comments under each target in the Makefile.
+
 3. **Run migrations**
-    ```bash
+   
+   ```bash
    cd app
    alembic upgrade head
+   ```
+
 4. **Manually populate initial data, e.g., create `user` and `admin` roles in `pg.roles`.**
-4. **Install all required packages in `pyproject.toml` section.**
+
+5. **Install all required packages in `pyproject.toml` section.**
 
 
-### Implemented Commands
+## Implemented Commands
 
 * `make app` - up application
 * `make pg` - up database
