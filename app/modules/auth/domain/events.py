@@ -4,6 +4,6 @@ from seedwork.domain.event import DomainEvent
 
 
 @dataclass(frozen=True)
-class RegisterUserEvent(DomainEvent):
+class RegistrationRequestedUserEvent(DomainEvent):
     email: str
     confirm_code: str
