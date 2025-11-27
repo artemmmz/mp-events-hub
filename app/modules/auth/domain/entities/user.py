@@ -3,7 +3,7 @@ from random import randint
 
 import bcrypt
 
-from modules.auth.domain.events import RegisterUserEvent
+from modules.auth.domain.events import RegistrationRequestedUserEvent
 from modules.auth.domain.value_object.roles import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
@@ -47,7 +47,7 @@ class User(BaseAggregate):
         )
 
     def register(self) -> None:
-        event = RegisterUserEvent(
+        event = RegistrationRequestedUserEvent(
             email=self.email.value,
             confirm_code=str(randint(10_000, 99_999)),
         )
