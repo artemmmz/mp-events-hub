@@ -8,6 +8,7 @@ from modules.email.application.send_confirm_code import (
 )
 from modules.email.infra.rmq.queues import REGISTRATION_REQUESTED_USER_EVENT_QUEUE
 
+
 router = RabbitRouter()
 
 
