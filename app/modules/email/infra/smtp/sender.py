@@ -22,7 +22,7 @@ class SmtpEmailSender(IEmailSender):
         else:
             msg = MIMEText(body, "plain")
 
-        msg['Subject'] = email.subject
+        msg['Subject'] = email.subject.value
         msg['From'] = self.username
         msg['To'] = email.to.value
 
@@ -34,4 +34,5 @@ class SmtpEmailSender(IEmailSender):
             start_tls=True,
             username=self.username,
             password=self.password,
+            validate_certs=False,
         )
