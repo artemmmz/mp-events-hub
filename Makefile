@@ -4,6 +4,8 @@ LOGS = docker logs
 ENV = --env-file .dev.env
 APP = docker_compose/app.yaml
 DB = docker_compose/pg.yaml
+RMQ = docker_compose/rmq.yaml
+REDIS = docker_compose/redis.yaml
 
 .PHONY: app
 app:
@@ -24,3 +26,20 @@ pg:
 pg-down:
 	${DC} -f ${DB} ${ENV} down
 	# docker compose -f docker_compose/pg.yaml --env-file .dev.env down
+
+.PHONY: rmq
+rmq:
+	${DC} -f ${RMQ} ${ENV} up --build -d
+
+.PHONY: rmq-down
+rmq-down:
+	${DC} -f ${RMQ} ${ENV} down
+
+
+.PHONY: redis
+redis:
+	${DC} -f ${REDIS} ${ENV} up --build -d
+
+.PHONY: redis-down
+redis-down:
+	${DC} -f ${REDIS} ${ENV} down
