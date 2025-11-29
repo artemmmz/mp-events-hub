@@ -3,7 +3,9 @@ from random import randint
 
 import bcrypt
 
+from modules.auth.domain.aggregate.exception import InvalidConfirmCodeException
 from modules.auth.domain.events import RegistrationRequestedUserEvent
+from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from modules.auth.domain.value_object.roles import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
@@ -46,19 +48,32 @@ class User(BaseAggregate):
             email_confirm=email_confirm,
         )
 
-    def register(self) -> None:
+    def unconfirmed_registration(self) -> ConfirmCodeValue:
+        confirm_code: str = str(randint(10_000, 99_999))
         event = RegistrationRequestedUserEvent(
             email=self.email.value,
-            confirm_code=str(randint(10_000, 99_999)),
+            confirm_code=confirm_code,
         )
 
         self.register_event(event=event)
+
+        return ConfirmCodeValue(_value=confirm_code)
 
     def check_password(self, password: str) -> bool:
         return bcrypt.checkpw(
             password=password.encode('utf-8'),
             hashed_password=self.hash_password,
         )
+
+    def confirm(
+        self,
+        input_code: ConfirmCodeValue,
+        stored_code: ConfirmCodeValue,
+    ) -> None:
+        if input_code != stored_code:
+            raise InvalidConfirmCodeException()
+
+        self.email_confirm = True
 
     @staticmethod
     def _hash_password(password: str) -> bytes:
