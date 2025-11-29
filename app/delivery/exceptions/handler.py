@@ -22,7 +22,6 @@ from modules.auth.domain.rules.exceptions import (
 
 
 exceptions_map: dict[type[AppException], int] = {
-
     AppException: HTTP_500_INTERNAL_SERVER_ERROR,
     UserAlreadyExistsException: HTTP_409_CONFLICT,
     EmailAlreadyExistsException: HTTP_409_CONFLICT,
