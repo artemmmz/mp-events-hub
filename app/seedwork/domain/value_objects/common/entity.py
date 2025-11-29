@@ -9,5 +9,4 @@ from seedwork.domain.value_objects.common.base import BaseSimpleValueObject
     slots=True,
 )
 class EntityIdValue(BaseSimpleValueObject[Any]):
-    def validate(self) -> None:
-        super().validate()
+    pass
