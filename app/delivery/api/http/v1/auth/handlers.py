@@ -7,10 +7,15 @@ from fastapi import APIRouter
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
+    HTTP_400_BAD_REQUEST,
+    HTTP_401_UNAUTHORIZED,
+    HTTP_404_NOT_FOUND,
+    HTTP_409_CONFLICT,
 )
 from fastapi.responses import Response
 
 from bootstrap.settings import Settings
+from delivery.api.http.schemas import ErrorSchema
 from delivery.api.http.v1.auth.schemas import (
     RegisterInSchema,
     RegisterOutSchema,
@@ -44,6 +49,13 @@ router = APIRouter(
     response_model=RegisterOutSchema,
     status_code=HTTP_200_OK,
     summary="Request register a new user account",
+    responses={
+        HTTP_200_OK: {"model": RegisterOutSchema, "description": "Request register user"},
+        HTTP_400_BAD_REQUEST: {"model": ErrorSchema, "description": "Invalid input"},
+        HTTP_401_UNAUTHORIZED: {"model": ErrorSchema, "description": "Unauthorized"},
+        HTTP_404_NOT_FOUND: {"model": ErrorSchema, "description": "Resource not found"},
+        HTTP_409_CONFLICT: {"model": ErrorSchema, "description": "Conflict rules"},
+    }
 )
 @inject
 async def register(
@@ -72,6 +84,13 @@ async def register(
     response_model=ConfirmOutSchema,
     status_code=HTTP_201_CREATED,
     summary="Confirm user registration and receive JWT token",
+    responses={
+        HTTP_201_CREATED: {"model": ConfirmOutSchema, "description": "Register user"},
+        HTTP_400_BAD_REQUEST: {"model": ErrorSchema, "description": "Invalid input"},
+        HTTP_401_UNAUTHORIZED: {"model": ErrorSchema, "description": "Unauthorized"},
+        HTTP_404_NOT_FOUND: {"model": ErrorSchema, "description": "Resource not found"},
+        HTTP_409_CONFLICT: {"model": ErrorSchema, "description": "Conflict rules"},
+    },
 )
 async def confirm(
     schema: ConfirmInSchema,
@@ -103,6 +122,13 @@ async def confirm(
     response_model=LoginOutSchema,
     status_code=HTTP_200_OK,
     summary="Authenticate user and receive JWT token",
+    responses={
+        HTTP_200_OK: {"model": LoginOutSchema, "description": "Login in profile"},
+        HTTP_400_BAD_REQUEST: {"model": ErrorSchema, "description": "Invalid input"},
+        HTTP_401_UNAUTHORIZED: {"model": ErrorSchema, "description": "Unauthorized"},
+        HTTP_404_NOT_FOUND: {"model": ErrorSchema, "description": "Resource not found"},
+        HTTP_409_CONFLICT: {"model": ErrorSchema, "description": "Conflict rules"},
+    },
 )
 @inject
 async def login(
