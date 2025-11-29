@@ -32,6 +32,8 @@ class FsEventBus(IEventBus):
 
     def __get_queue_by_event(self, event: DomainEvent) -> QueueRmq:
         queue: QueueRmq | None = self._event_queue_map.get(type(event), None)
+
         if queue is None:
             raise QueueNotFoundException(event=event)
+
         return queue
