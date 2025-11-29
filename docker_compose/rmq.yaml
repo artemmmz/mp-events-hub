@@ -1,0 +1,21 @@
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"  # Web management UI
+      - "5672:5672"    # AMQP protocol
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RMQ__USERNAME}
+      - RABBITMQ_DEFAULT_PASS=${RMQ__PASSWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - backend
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  backend:
+    driver: bridge

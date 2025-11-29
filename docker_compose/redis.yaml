@@ -1,0 +1,22 @@
+services:
+  redis:
+    image: redis:7.2
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS__PASSWORD}
+    command: >
+      redis-server --appendonly yes --appendfsync everysec --maxmemory 512mb --maxmemory-policy allkeys-lru --requirepass ${REDIS__PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+
+volumes:
+  redis_data:
+
+networks:
+  backend:
+    driver: bridge
