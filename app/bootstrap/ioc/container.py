@@ -10,6 +10,9 @@ from bootstrap.ioc.providers.bootstrap import(
 )
 from bootstrap.ioc.providers.infra import (
     AlchemyProvider,
+    EventBusProvider,
+    FastStreamProvider,
+    RedisProvider,
 )
 from bootstrap.ioc.providers.modules.auth import (
     RulesAuthProvider,
@@ -17,7 +20,12 @@ from bootstrap.ioc.providers.modules.auth import (
     MapperAuthProvider,
     ServiceAuthProvider,
     UseCaseAuthProvider,
-    DMAuthProvider,
+    DmAlchemyAuthProvider,
+    DmRedisAuthProvider,
+)
+from bootstrap.ioc.providers.modules.email import (
+    SmtpProvider,
+    InfraEmailUseCaseProvider,
 )
 from bootstrap.ioc.providers.seedwork.infra import (
     TransactionManagerProvider,
@@ -27,12 +35,18 @@ from bootstrap.ioc.providers.seedwork.infra import (
 DEV_PROVIDERS: list[Provider] = [
     SettingProvider(),
     AlchemyProvider(),
+    EventBusProvider(),
+    FastStreamProvider(),
+    RedisProvider(),
     RulesAuthProvider(),
     RepositoryAuthProvider(),
     MapperAuthProvider(),
     ServiceAuthProvider(),
     UseCaseAuthProvider(),
-    DMAuthProvider(),
+    DmAlchemyAuthProvider(),
+    DmRedisAuthProvider(),
+    SmtpProvider(),
+    InfraEmailUseCaseProvider(),
     TransactionManagerProvider(),
     FastapiProvider(),
 ]
