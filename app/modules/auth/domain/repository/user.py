@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from modules.auth.domain.entities.user import User
+from modules.auth.domain.aggregate.user import User
+from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
 from seedwork.domain.repository import BaseRepository
 
@@ -14,6 +15,10 @@ class IUserRepository(
         ...
 
     @abstractmethod
+    async def update(self, user: User) -> User:
+        ...
+
+    @abstractmethod
     async def is_email_taken(self, email: EmailValue) -> bool:
         ...
 
@@ -24,6 +29,13 @@ class IUserRepository(
         second_name: NameValue,
         group_number: GroupNumberValue,
     ) -> bool:
+        ...
+
+    @abstractmethod
+    async def get_by_id(
+        self,
+        required_id: EntityIdValue,
+    ) -> User | None:
         ...
 
     @abstractmethod

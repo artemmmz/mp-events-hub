@@ -6,7 +6,8 @@ from .application import (
 from .domain import RulesAuthProvider
 from .infra import (
     RepositoryAuthProvider,
-    DMAuthProvider,
+    DmAlchemyAuthProvider,
+    DmRedisAuthProvider,
 )
 
 
@@ -16,5 +17,6 @@ __all__ = (
     "UseCaseAuthProvider",
     "RulesAuthProvider",
     "RepositoryAuthProvider",
-    "DMAuthProvider",
+    "DmAlchemyAuthProvider",
+    "DmRedisAuthProvider",
 )

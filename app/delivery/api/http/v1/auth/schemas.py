@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -10,7 +12,16 @@ class RegisterInSchema(BaseModel):
 
 
 class RegisterOutSchema(BaseModel):
-    token: str
+    user_uid: UUID
+
+
+class ConfirmInSchema(BaseModel):
+    user_id: UUID
+    confirm_code: str
+
+
+class ConfirmOutSchema(BaseModel):
+    jwt_auth_token: str
 
 
 class LoginInSchema(BaseModel):
@@ -19,4 +30,4 @@ class LoginInSchema(BaseModel):
 
 
 class LoginOutSchema(BaseModel):
-    token: str
+    jwt_auth_token: str

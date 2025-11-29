@@ -1,16 +1,19 @@
 from dataclasses import dataclass
+from datetime import timedelta
 
-from modules.auth.application.services.jwt import JwtService
-from modules.auth.domain.entities.user import User
+from modules.auth.application.interface.dm.kvalue.user import IUserKvDm
+from modules.auth.domain.aggregate.user import User
 from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.domain.rules.user import UniqueEmailRule, UniqueUserRule
 from modules.auth.domain.rules.exceptions import (
     EmailAlreadyExistsException,
     UserAlreadyExistsException,
 )
+from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from modules.auth.domain.value_object.roles import RoleValue
 from seedwork.application.use_case import BaseUseCase
-from seedwork.domain.value_objects.jwt import JwtTokenValue
+from seedwork.domain.event import DomainEvent
+from seedwork.infra.event_bus.base import IEventBus
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 
@@ -21,19 +24,21 @@ class RegisterCommand:
     group_number: str
     email: str
     password: str
+    confirm_code_ttl: timedelta
 
 
 @dataclass
 class RegisterUseCase(
-    BaseUseCase[RegisterCommand, JwtTokenValue],
+    BaseUseCase[RegisterCommand, User],
 ):
     _transaction_manager: ITransactionManager
     _user_repository: IUserRepository
+    _user_kv_dm: IUserKvDm
     _unique_email_rule: UniqueEmailRule
     _unique_user_rule: UniqueUserRule
-    _jwt_manager: JwtService
+    _event_bus: IEventBus
 
-    async def act(self, command: RegisterCommand) -> JwtTokenValue:
+    async def act(self, command: RegisterCommand) -> User:
         user: User = User.create(
             name=command.name,
             second_name=command.second_name,
@@ -41,6 +46,7 @@ class RegisterUseCase(
             email=command.email,
             password=command.password,
             role=RoleValue.USER,
+            email_confirm=False,
         )
 
         if await self._unique_email_rule.is_broken(email=user.email):
@@ -57,13 +63,19 @@ class RegisterUseCase(
                 group_number=user.group_number,
             )
 
-        await self._user_repository.create(user=user)
+        confirm_code: ConfirmCodeValue = user.unconfirmed_registration()
 
-        token: JwtTokenValue = self._jwt_manager.issue_token(
-            payload={"user_id": str(user.id)},
+        await self._user_kv_dm.save_confirm_code(
+            user_id=user.id,
+            confirm_code=confirm_code,
+            ttl=command.confirm_code_ttl,
         )
+
+        await self._user_repository.create(user=user)
 
         await self._transaction_manager.commit()
 
-        return token
+        events: list[DomainEvent] = user.pull_events()
+        await self._event_bus.publish(events=events)
 
+        return user

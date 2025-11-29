@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from modules.auth.application.services.jwt import JwtService
-from modules.auth.domain.entities.user import User
+from modules.auth.domain.aggregate.user import User
 from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.domain.rules.exceptions import (
     UserNotFoundException,

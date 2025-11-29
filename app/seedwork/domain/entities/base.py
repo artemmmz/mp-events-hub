@@ -8,8 +8,7 @@ from datetime import (
     timezone,
 )
 
-from uuid_utils import uuid7
-
+from seedwork.domain.uuid7 import uuid7_native
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 
 
@@ -19,7 +18,7 @@ from seedwork.domain.value_objects.common.entity import EntityIdValue
 )
 class Entity(ABC):
     id: EntityIdValue = field(
-        default_factory=uuid7,
+        default_factory=lambda: EntityIdValue(_value=uuid7_native()),
         repr=False,
     )
 
@@ -46,14 +45,14 @@ class TimestampEntity(
     ABC,
 ):
     _created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    _updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    _updated_at: datetime | None = field(default=None)
 
     @property
     def get_created_time(self) -> datetime:
         return self._created_at
 
     @property
-    def get_updated_time(self) -> datetime:
+    def get_updated_time(self) -> datetime | None:
         return self._updated_at
 
     def _touch(self) -> None:

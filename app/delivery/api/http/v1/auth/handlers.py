@@ -10,11 +10,16 @@ from starlette.status import (
 )
 from fastapi.responses import Response
 
-from delivery.api.v1.auth.schemas import (
+from bootstrap.settings import Settings
+from delivery.api.http.v1.auth.schemas import (
     RegisterInSchema,
     RegisterOutSchema,
     LoginInSchema,
-    LoginOutSchema,
+    LoginOutSchema, ConfirmInSchema, ConfirmOutSchema,
+)
+from modules.auth.application.use_cases.confirm import (
+    ConfirmRegisterUseCase,
+    ConfirmRegisterCommand,
 )
 from modules.auth.application.use_cases.register import (
     RegisterUseCase,
@@ -24,6 +29,7 @@ from modules.auth.application.use_cases.login import (
     LoginUseCase,
     LoginCommand,
 )
+from modules.auth.domain.aggregate.user import User
 from seedwork.domain.value_objects.jwt import JwtTokenValue
 
 
@@ -36,14 +42,14 @@ router = APIRouter(
 @router.post(
     path="/register",
     response_model=RegisterOutSchema,
-    status_code=HTTP_201_CREATED,
-    summary="",
+    status_code=HTTP_200_OK,
+    summary="Request register a new user account",
 )
 @inject
 async def register(
     schema: RegisterInSchema,
-    response: Response,
     use_case: FromDishka[RegisterUseCase],
+    settings: FromDishka[Settings],
 ) -> RegisterOutSchema:
     command = RegisterCommand(
         name=schema.name,
@@ -51,11 +57,35 @@ async def register(
         group_number=schema.group_number,
         email=str(schema.email),
         password=schema.password,
+        confirm_code_ttl=settings.auth.confirm_code_ttl_sec,
+    )
+
+    user: User = await use_case.act(command=command)
+
+    return RegisterOutSchema(
+        user_uid=user.id.value,
+    )
+
+
+@router.post(
+    path="/confirm",
+    response_model=ConfirmOutSchema,
+    status_code=HTTP_201_CREATED,
+    summary="Confirm user registration and receive JWT token",
+)
+async def confirm(
+    schema: ConfirmInSchema,
+    response: Response,
+    use_case: FromDishka[ConfirmRegisterUseCase],
+) -> ConfirmOutSchema:
+    command =ConfirmRegisterCommand(
+        user_id=schema.user_id,
+        confirm_code=schema.confirm_code,
     )
 
     token: JwtTokenValue = await use_case.act(command=command)
 
-    schema = RegisterOutSchema(token=token.value)
+    schema = ConfirmOutSchema(jwt_auth_token=token.value)
 
     response.set_cookie(
         key="access_token",
@@ -72,7 +102,7 @@ async def register(
     path="/login",
     response_model=LoginOutSchema,
     status_code=HTTP_200_OK,
-    summary="",
+    summary="Authenticate user and receive JWT token",
 )
 @inject
 async def login(
@@ -95,6 +125,6 @@ async def login(
         expires="Wed, 31 Dec 2137 23:59:59 GMT",
     )
 
-    schema = LoginOutSchema(token=token.value)
+    schema = LoginOutSchema(jwt_auth_token=token.value)
 
     return schema
