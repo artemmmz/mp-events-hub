@@ -1,10 +1,13 @@
 from dishka import Provider, Scope, provide
 
+from modules.auth.application.interface.dm.kvalue.user import IUserKvDm
 from modules.auth.application.services.jwt import JwtService
+from modules.auth.application.use_cases.confirm import ConfirmRegisterUseCase
 from modules.auth.application.use_cases.login import LoginUseCase
 from modules.auth.application.use_cases.register import RegisterUseCase
 from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.domain.rules.user import UniqueEmailRule, UniqueUserRule
+from seedwork.infra.event_bus.base import IEventBus
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 
@@ -16,16 +19,33 @@ class UseCaseAuthProvider(Provider):
         self,
         transaction_manager: ITransactionManager,
         user_repository: IUserRepository,
+        user_kv_dm: IUserKvDm,
         unique_email_rule: UniqueEmailRule,
         unique_user_rule: UniqueUserRule,
-        jwt_manager: JwtService,
-    ) -> RegisterUseCase:
+        event_bus: IEventBus,
+        ) -> RegisterUseCase:
         return RegisterUseCase(
             _transaction_manager=transaction_manager,
             _user_repository=user_repository,
+            _user_kv_dm=user_kv_dm,
             _unique_email_rule=unique_email_rule,
             _unique_user_rule=unique_user_rule,
-            _jwt_manager=jwt_manager,
+            _event_bus=event_bus,
+        )
+
+    @provide
+    def confirm(
+        self,
+        jwt_service: JwtService,
+        user_repo: IUserRepository,
+        user_kv_dm: IUserKvDm,
+        transactional_manager: ITransactionManager,
+    ) -> ConfirmRegisterUseCase:
+        return ConfirmRegisterUseCase(
+            _jwt_service=jwt_service,
+            _user_repo=user_repo,
+            _user_kv_dm=user_kv_dm,
+            _transactional_manager=transactional_manager,
         )
 
     @provide
