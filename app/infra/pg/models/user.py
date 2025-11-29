@@ -26,8 +26,9 @@ class UserOrm(
     name: Mapped[str]
     second_name: Mapped[str]
     group_number: Mapped[str]
-    email: Mapped[str] = mapped_column(unique=True)
+    email: Mapped[str] = mapped_column(index=True)
     hash_password: Mapped[bytes]
+    email_confirm: Mapped[bool]
 
     role: Mapped["RoleOrm"] = relationship(back_populates="users")
 
