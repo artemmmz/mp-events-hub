@@ -1,4 +1,6 @@
+from datetime import timedelta
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
@@ -20,6 +22,34 @@ class PgSettings(BaseSettings):
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
 
 
+class RmqSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
+    username: str = Field(alias="RMQ__USERNAME", default="RMQ_USERNAME")
+    password: str = Field(alias="RMQ__PASSWORD", default="RMQ_PASSWORD")
+    host: str = Field(alias="RMQ__HOST", default="localhost")
+    port: int = Field(alias="RMQ__PORT", default=5672)
+
+    @property
+    def rabbit_broker_url(self) -> str:
+        return rf"amqp://{self.username}:{self.password}@{self.host}:{self.port}/"
+
+
+class RedisSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
+    host: str = Field(alias="REDIS__HOST", default="localhost")
+    port: int = Field(alias="REDIS__PORT", default=6379)
+    db: int = Field(alias="REDIS__DB", default=0)
+    password: str = Field(alias="REDIS__PASSWORD", default="")
+
+
 class AuthSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
@@ -27,8 +57,31 @@ class AuthSettings(BaseSettings):
     )
 
     secret_key: str = Field(default="", alias="AUTH__SECRET_KEY")
-    access_token_lifetime: int = Field(default=5_000_000_000, alias="AUTH__ACCESS_TOKEN_LIFETIME")
+    access_token_lifetime: int = Field(
+        default=5_000_000_000,
+        alias="AUTH__ACCESS_TOKEN_LIFETIME",
+    )
     algorithm: str = Field(default="sha256", alias="AUTH__ALGORITHM")
+    confirm_code_ttl_sec_int: int = Field(
+        default=timedelta(minutes=10),
+        alias="AUTH__CONFIRM_CODE_TTL_SEC",
+    )
+
+    @property
+    def confirm_code_ttl_sec(self) -> timedelta:
+        return timedelta(seconds=self.confirm_code_ttl_sec_int)
+
+
+class EmailSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
+    smtp_host: str = Field(default="localhost", alias="EMAIL__SMTP_HOST")
+    smtp_port: int = Field(default=25, alias="EMAIL__SMTP_PORT")
+    username: str = Field(default="user", alias="EMAIL__USERNAME")
+    password: str = Field(default="", alias="EMAIL__PASSWORD")
 
 
 class Settings(BaseSettings):
@@ -38,7 +91,10 @@ class Settings(BaseSettings):
     )
 
     pg: PgSettings = PgSettings()
+    rmq: RmqSettings = RmqSettings()
+    redis: RedisSettings = RedisSettings()
     auth: AuthSettings = AuthSettings()
+    email: EmailSettings = EmailSettings()
 
 
 def get_settings() -> Settings:
