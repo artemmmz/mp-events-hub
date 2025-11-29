@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from delivery.api.v1.auth import auth_router
+from delivery.api.http.v1.auth import auth_router
 
 
 v1_router = APIRouter()
