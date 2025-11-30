@@ -6,7 +6,7 @@ import bcrypt
 from modules.auth.domain.aggregate.exception import InvalidConfirmCodeException
 from modules.auth.domain.events import RegistrationRequestedUserEvent
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
-from modules.auth.domain.value_object.roles import RoleValue
+from seedwork.domain.value_object.user import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
 

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from modules.auth.domain.aggregate.user import User
 from infra.pg.models.user import UserOrm
-from modules.auth.domain.value_object.roles import RoleValue
+from seedwork.domain.value_object.user import RoleValue
 from seedwork.application.mapper import BaseMapper
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue

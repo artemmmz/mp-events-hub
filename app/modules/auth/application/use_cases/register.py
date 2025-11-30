@@ -10,7 +10,7 @@ from modules.auth.domain.rules.exceptions import (
     UserAlreadyExistsException,
 )
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
-from modules.auth.domain.value_object.roles import RoleValue
+from seedwork.domain.value_object.user import RoleValue
 from seedwork.application.use_case import BaseUseCase
 from seedwork.domain.event import DomainEvent
 from seedwork.infra.event_bus.base import IEventBus

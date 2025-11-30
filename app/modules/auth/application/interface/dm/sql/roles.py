@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from infra.pg.models import RoleOrm
-from modules.auth.domain.value_object.roles import RoleValue
+from seedwork.domain.value_object.user import RoleValue
 from seedwork.infra.dm.base import BaseDataMapper
 
 
