@@ -5,7 +5,7 @@ from uuid import UUID
 from sqlalchemy import DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from infra.pg.models.common import (
+from seedwork.infra.pg.models.common import (
     BaseOrm,
     UidPkMixin,
     CreatedAtMixin,
@@ -13,7 +13,7 @@ from infra.pg.models.common import (
 )
 
 if TYPE_CHECKING:
-    from infra.pg.models.address import AddressOrm
+    from modules.event.infra.pg.models import UserEventOrm, AddressOrm
 
 
 class EventOrm(
@@ -31,9 +31,12 @@ class EventOrm(
     )
 
     created_by_user_id: Mapped[UUID] = mapped_column(
-        ForeignKey("users.id"),
+        ForeignKey("users_event.uid"),
     )
 
+    created_by_user: Mapped["UserEventOrm"] = relationship(
+        back_populates="events_created",
+    )
     address: Mapped[Optional["AddressOrm"]] = relationship(
         back_populates="event",
     )

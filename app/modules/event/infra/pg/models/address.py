@@ -4,13 +4,13 @@ from uuid import UUID
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from infra.pg.models.common import (
+from seedwork.infra.pg.models.common import (
     BaseOrm,
     UidPkMixin,
 )
 
 if TYPE_CHECKING:
-    from infra.pg.models.event import EventOrm
+    from modules.event.infra.pg.models.event import EventOrm
 
 
 class AddressOrm(
