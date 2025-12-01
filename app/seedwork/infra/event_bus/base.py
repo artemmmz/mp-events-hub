@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar
 
-from seedwork.domain.event import DomainEvent
+from seedwork.domain.events.base import DomainEvent
 
 
 QueueRmq = TypeVar("QueueRmq", bound=str)
