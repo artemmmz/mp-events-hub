@@ -6,7 +6,7 @@ from dataclasses import (
 )
 
 from seedwork.domain.entities import TimestampEntity
-from seedwork.domain.event import DomainEvent
+from seedwork.domain.events.base import DomainEvent
 
 
 @dataclass(
