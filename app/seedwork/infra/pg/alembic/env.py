@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from bootstrap.settings import get_settings
-from infra.pg.models import BaseOrm
+from seedwork.infra.pg.models import BaseOrm
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
