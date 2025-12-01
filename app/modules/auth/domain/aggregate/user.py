@@ -4,9 +4,12 @@ from random import randint
 import bcrypt
 
 from modules.auth.domain.aggregate.exception import InvalidConfirmCodeException
-from modules.auth.domain.events import RegistrationRequestedUserEvent
+from seedwork.domain.events.auth import (
+    RequestedRegistrationUserEvent,
+    ConfirmRegistrationUserEvent,
+)
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
-from seedwork.domain.value_object.user import RoleValue
+from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
 
@@ -50,7 +53,7 @@ class User(BaseAggregate):
 
     def unconfirmed_registration(self) -> ConfirmCodeValue:
         confirm_code: str = str(randint(10_000, 99_999))
-        event = RegistrationRequestedUserEvent(
+        event = RequestedRegistrationUserEvent(
             email=self.email.value,
             confirm_code=confirm_code,
         )
@@ -74,6 +77,13 @@ class User(BaseAggregate):
             raise InvalidConfirmCodeException()
 
         self.email_confirm = True
+
+        event = ConfirmRegistrationUserEvent(
+            user_id=self.id.value,
+            role=self.role.value,
+        )
+
+        self.register_event(event)
 
     @staticmethod
     def _hash_password(password: str) -> bytes:
