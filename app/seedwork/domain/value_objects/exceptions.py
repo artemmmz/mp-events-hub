@@ -20,3 +20,12 @@ class EmailFormatException(ValueException):
     @property
     def message(self) -> str:
         return f"Неправильный формат почты: {self.email}"
+
+
+@dataclass
+class RoleValueException(ValueException):
+    value: str
+
+    @property
+    def message(self) -> str:
+        return f"Недопустимое значение роли: {self.value}"
