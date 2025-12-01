@@ -27,8 +27,15 @@ from bootstrap.ioc.providers.modules.email import (
     SmtpProvider,
     InfraEmailUseCaseProvider,
 )
-from bootstrap.ioc.providers.seedwork.infra import (
+from bootstrap.ioc.providers.modules.event import (
+    MapperEventProvider,
+    UseCaseEventProvider,
+    DmEventProvider,
+    RepositoryEventProvider,
+)
+from bootstrap.ioc.providers.seedwork import (
     TransactionManagerProvider,
+    ServiceDomainProvider,
 )
 
 
@@ -47,7 +54,12 @@ DEV_PROVIDERS: list[Provider] = [
     DmRedisAuthProvider(),
     SmtpProvider(),
     InfraEmailUseCaseProvider(),
+    MapperEventProvider(),
+    UseCaseEventProvider(),
+    DmEventProvider(),
+    RepositoryEventProvider(),
     TransactionManagerProvider(),
+    ServiceDomainProvider(),
     FastapiProvider(),
 ]
 
