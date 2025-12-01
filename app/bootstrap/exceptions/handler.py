@@ -7,12 +7,18 @@ from starlette.status import (
     HTTP_500_INTERNAL_SERVER_ERROR,
     HTTP_409_CONFLICT,
     HTTP_404_NOT_FOUND,
+    HTTP_403_FORBIDDEN,
     HTTP_401_UNAUTHORIZED,
     HTTP_400_BAD_REQUEST,
 )
 
+from modules.event.domain.aggregate.exceptions import UserRoleNotAllowedException
 from seedwork.domain.value_objects.common.exceptions import ValueException
 from seedwork.exceptions import AppException
+from seedwork.domain.services.exceptions import (
+    ExactRoleMismatchException,
+    MinRoleTooLowException,
+)
 from modules.auth.domain.rules.exceptions import (
     UserAlreadyExistsException,
     EmailAlreadyExistsException,
@@ -26,7 +32,11 @@ exceptions_map: dict[type[AppException], int] = {
     UserAlreadyExistsException: HTTP_409_CONFLICT,
     EmailAlreadyExistsException: HTTP_409_CONFLICT,
     UserNotFoundException: HTTP_404_NOT_FOUND,
+    ExactRoleMismatchException: HTTP_403_FORBIDDEN,
+    MinRoleTooLowException: HTTP_403_FORBIDDEN,
+    UserRoleNotAllowedException: HTTP_403_FORBIDDEN,
     InvalidPasswordException: HTTP_401_UNAUTHORIZED,
+
 }
 
 
