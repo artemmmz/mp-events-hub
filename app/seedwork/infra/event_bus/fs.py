@@ -4,7 +4,7 @@ from typing import TypeVar
 
 from faststream.rabbit import RabbitBroker
 
-from seedwork.domain.event import DomainEvent
+from seedwork.domain.events.base import DomainEvent
 from seedwork.infra.event_bus.base import IEventBus, QueueRmq
 from seedwork.infra.event_bus.exceptions import QueueNotFoundException
 

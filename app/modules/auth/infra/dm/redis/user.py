@@ -3,7 +3,7 @@ from asyncpg.pgproto.pgproto import timedelta
 from modules.auth.application.interface.dm.kvalue.user import IUserKvDm
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from seedwork.domain.value_objects.common.entity import EntityIdValue
-from seedwork.infra.dm.redis import BaseRedisDataMapper
+from seedwork.infra.dm.base import BaseRedisDataMapper
 
 
 class UserRedisDm(

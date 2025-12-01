@@ -44,16 +44,16 @@ class TimestampEntity(
     Entity,
     ABC,
 ):
-    _created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    _updated_at: datetime | None = field(default=None)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime | None = field(default=None)
 
     @property
     def get_created_time(self) -> datetime:
-        return self._created_at
+        return self.created_at
 
     @property
     def get_updated_time(self) -> datetime | None:
-        return self._updated_at
+        return self.updated_at
 
     def _touch(self) -> None:
-        self._updated_at = datetime.now(tz=timezone.utc)
+        self.updated_at = datetime.now(tz=timezone.utc)

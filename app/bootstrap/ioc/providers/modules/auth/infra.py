@@ -3,11 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
 from modules.auth.application.interface.dm.kvalue.user import IUserKvDm
-from modules.auth.application.interface.dm.sql.roles import IRoleDm
+from seedwork.application.interface.dm.sql.roles import IRoleDm
 from modules.auth.application.interface.dm.sql.user import IUserDm
 from modules.auth.application.mappers.user import UserMapper
 from modules.auth.domain.repository.user import IUserRepository
-from modules.auth.infra.dm.alchemy.role import RoleAlchemyDm
+from seedwork.infra.dm.role import RoleAlchemyDm
 from modules.auth.infra.dm.alchemy.user import UserAlchemyDm
 from modules.auth.infra.dm.redis.user import UserRedisDm
 from modules.auth.infra.repository.user import UserAlchemyRepository

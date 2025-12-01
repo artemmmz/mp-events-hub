@@ -39,12 +39,14 @@ class UseCaseAuthProvider(Provider):
         jwt_service: JwtService,
         user_repo: IUserRepository,
         user_kv_dm: IUserKvDm,
+        event_bus: IEventBus,
         transactional_manager: ITransactionManager,
     ) -> ConfirmRegisterUseCase:
         return ConfirmRegisterUseCase(
             _jwt_service=jwt_service,
             _user_repo=user_repo,
             _user_kv_dm=user_kv_dm,
+            _event_bus=event_bus,
             _transactional_manager=transactional_manager,
         )
 

@@ -3,9 +3,9 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
-from infra.pg.models import UserOrm
+from modules.auth.infra.pg.models import UserAuthOrm
 from modules.auth.application.interface.dm.sql.user import IUserDm
-from seedwork.infra.dm.alchemy import BaseAlchemyDataMapper
+from seedwork.infra.dm.base import BaseAlchemyDataMapper
 
 
 class UserAlchemyDm(
@@ -16,14 +16,14 @@ class UserAlchemyDm(
         self,
         uid: UUID,
         role_load: bool = True,
-    ) -> UserOrm | None:
-        query = select(UserOrm).where(UserOrm.uid == uid)
+    ) -> UserAuthOrm | None:
+        query = select(UserAuthOrm).where(UserAuthOrm.uid == uid)
 
         if role_load:
-            query = query.options(joinedload(UserOrm.role))
+            query = query.options(joinedload(UserAuthOrm.role))
 
         result = await self._session.execute(query)
 
-        user_orm: UserOrm | None = result.scalar_one_or_none()
+        user_orm: UserAuthOrm | None = result.scalar_one_or_none()
 
         return user_orm

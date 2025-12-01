@@ -4,14 +4,14 @@ from sqlalchemy import select, update, exists, and_
 from sqlalchemy.orm import joinedload
 from sqlalchemy.inspection import inspect
 
-from infra.pg.excpetions import MissingRequiredFieldException
-from infra.pg.models import RoleOrm
-from modules.auth.application.interface.dm.sql.roles import IRoleDm
+from seedwork.infra.pg.excpetions import MissingRequiredFieldException
+from seedwork.infra.pg.models import RoleOrm
+from seedwork.application.interface.dm.sql.roles import IRoleDm
 from modules.auth.application.interface.dm.sql.user import IUserDm
 from modules.auth.application.mappers.user import UserMapper
 from modules.auth.domain.aggregate.user import User
 from modules.auth.domain.repository.user import IUserRepository
-from infra.pg.models.user import UserOrm
+from modules.auth.infra.pg.models.user import UserAuthOrm
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.user import (
     EmailValue,
@@ -36,22 +36,22 @@ class UserAlchemyRepository(
             self._role_dm.get_by_name(role=user.role)
         )
 
-        user_orm: UserOrm = self._mapper.to_orm(user=user)
+        user_orm: UserAuthOrm = self._mapper.to_orm(user=user)
         user_orm.role_uid = role_orm.uid
 
         self._session.add(user_orm)
 
     async def update(self, user: User) -> User:
-        user_orm: UserOrm | None = await (
+        user_orm: UserAuthOrm | None = await (
             self._user_dm.get_by_uid(uid=user.id.value, role_load=False)
         )
 
         if user_orm is None:
             raise MissingRequiredFieldException(
-                required_field=user.id.value,
+                required_field="user.id",
             )
 
-        new_data: UserOrm = self._mapper.to_orm(user)
+        new_data: UserAuthOrm = self._mapper.to_orm(user)
 
         self._copy_orm_fields(source=new_data, target=user_orm)
 
@@ -69,8 +69,8 @@ class UserAlchemyRepository(
                 exists()
                 .where(
                     and_(
-                        UserOrm.email == email.value,
-                        UserOrm.email_confirm.is_(True),
+                        UserAuthOrm.email == email.value,
+                        UserAuthOrm.email_confirm.is_(True),
                     )
                 )
             )
@@ -88,10 +88,10 @@ class UserAlchemyRepository(
                 exists()
                 .where(
                     and_(
-                        UserOrm.name == name.value,
-                        UserOrm.second_name == second_name.value,
-                        UserOrm.group_number == group_number.value,
-                        UserOrm.email_confirm.is_(True),
+                        UserAuthOrm.name == name.value,
+                        UserAuthOrm.second_name == second_name.value,
+                        UserAuthOrm.group_number == group_number.value,
+                        UserAuthOrm.email_confirm.is_(True),
                     )
                 )
             )
@@ -103,14 +103,14 @@ class UserAlchemyRepository(
         required_id: EntityIdValue,
     ) -> User | None:
         result = await self._session.execute(
-            select(UserOrm)
-            .where(UserOrm.uid == required_id.value)
+            select(UserAuthOrm)
+            .where(UserAuthOrm.uid == required_id.value)
             .options(
-                joinedload(UserOrm.role)
+                joinedload(UserAuthOrm.role)
             )
         )
 
-        user_orm: UserOrm | None = result.scalar_one_or_none()
+        user_orm: UserAuthOrm | None = result.scalar_one_or_none()
 
         if user_orm:
             user: User = self._mapper.to_entity(user_orm)
@@ -124,19 +124,19 @@ class UserAlchemyRepository(
         email: EmailValue,
     ) -> User | None:
         result = await self._session.execute(
-            select(UserOrm)
+            select(UserAuthOrm)
             .where(
                 and_(
-                    UserOrm.email == email.value,
-                    UserOrm.email_confirm.is_(True),
+                    UserAuthOrm.email == email.value,
+                    UserAuthOrm.email_confirm.is_(True),
                 )
             )
             .options(
-                joinedload(UserOrm.role)
+                joinedload(UserAuthOrm.role)
             )
         )
 
-        user_orm: UserOrm | None = result.scalar_one_or_none()
+        user_orm: UserAuthOrm | None = result.scalar_one_or_none()
 
         if user_orm:
             user: User = self._mapper.to_entity(user_orm)
@@ -150,14 +150,14 @@ class UserAlchemyRepository(
         email: EmailValue,
     ) -> None:
         await self._session.execute(
-            update(UserOrm)
-            .where(UserOrm.email == email.value)
+            update(UserAuthOrm)
+            .where(UserAuthOrm.email == email.value)
             .values(email_confirm=True)
         )
 
     @staticmethod
-    def _copy_orm_fields(source: UserOrm, target: UserOrm) -> None:
-        mapper = inspect(UserOrm)
+    def _copy_orm_fields(source: UserAuthOrm, target: UserAuthOrm) -> None:
+        mapper = inspect(UserAuthOrm)
 
         attrs = list(mapper.column_attrs.values())
 

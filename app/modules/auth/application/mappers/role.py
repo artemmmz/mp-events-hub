@@ -1,6 +1,6 @@
-from modules.auth.domain.value_object.roles import RoleValue
-from infra.pg.models.role import RoleOrm
-from seedwork.application.mapper import BaseMapper
+from seedwork.domain.value_objects.role import RoleValue
+from seedwork.infra.pg.models.role import RoleOrm
+from seedwork.domain.mapper import BaseMapper
 
 
 class RoleMapper(BaseMapper):
