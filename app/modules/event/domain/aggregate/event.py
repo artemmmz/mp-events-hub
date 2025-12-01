@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
-from modules.events.domain.aggregate.exceptions import AddressFormatException
-from modules.events.domain.value_objects.address import (
+from modules.event.domain.aggregate.exceptions import AddressFormatException
+from modules.event.domain.value_objects.address import (
     AddressValue,
     CityValue,
     StreetValue,
@@ -12,7 +12,7 @@ from modules.events.domain.value_objects.address import (
     BuildingBlockValue,
     AuditoriumValue,
 )
-from modules.events.domain.value_objects.event import (
+from modules.event.domain.value_objects.event import (
     TitleValue,
     ScheduledAtValue,
     DescriptionValue,

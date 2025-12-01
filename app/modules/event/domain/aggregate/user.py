@@ -1,15 +1,35 @@
 from dataclasses import dataclass
 from datetime import datetime
+from uuid import UUID
 
-from modules.events.domain.aggregate.event import Event
-from modules.events.domain.aggregate.exceptions import UserRoleNotAllowedException
-from seedwork.domain.value_object.user import RoleValue
+from modules.event.domain.aggregate.event import Event
+from modules.event.domain.aggregate.exceptions import UserRoleNotAllowedException
+from seedwork.domain.value_objects.exceptions import RoleValueException
+from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
+from seedwork.domain.value_objects.common.entity import EntityIdValue
 
 
 @dataclass
 class User(BaseAggregate):
     role: RoleValue
+
+    @classmethod
+    def create(
+        cls,
+        _id: UUID,
+        role: str,
+    ) -> "User":
+        try:
+            role_vo = RoleValue(role)
+
+        except ValueError:
+            raise RoleValueException(value=role)
+
+        return User(
+            id=EntityIdValue(_id),
+            role=role_vo,
+        )
 
     def create_event(
         self,
