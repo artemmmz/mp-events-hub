@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
 
-from infra.pg.models import UserOrm
+from modules.auth.infra.pg.models import UserAuthOrm
 from seedwork.infra.dm.base import BaseDataMapper
 
 
@@ -14,5 +14,5 @@ class IUserDm(
         self,
         uid: UUID,
         role_load: bool = True,
-    ) -> UserOrm | None:
+    ) -> UserAuthOrm | None:
         ...
