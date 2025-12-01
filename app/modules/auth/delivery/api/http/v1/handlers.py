@@ -15,8 +15,8 @@ from starlette.status import (
 from fastapi.responses import Response
 
 from bootstrap.settings import Settings
-from delivery.api.http.schemas import ErrorSchema
-from delivery.api.http.v1.auth.schemas import (
+from seedwork.delivery.api.http.schemas import ErrorSchema
+from modules.auth.delivery.api.http.v1.schemas import (
     RegisterInSchema,
     RegisterOutSchema,
     LoginInSchema,
