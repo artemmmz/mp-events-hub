@@ -8,8 +8,10 @@ from modules.auth.domain.aggregate.user import User
 from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from seedwork.application.use_case import BaseUseCase
+from seedwork.domain.events.base import DomainEvent
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.jwt import JwtTokenValue
+from seedwork.infra.event_bus.base import IEventBus
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 
@@ -26,6 +28,7 @@ class ConfirmRegisterUseCase(
     _jwt_service: JwtService
     _user_repo: IUserRepository
     _user_kv_dm: IUserKvDm
+    _event_bus: IEventBus
     _transactional_manager: ITransactionManager
 
     async def act(self, command: ConfirmRegisterCommand) -> JwtTokenValue:
@@ -49,11 +52,14 @@ class ConfirmRegisterUseCase(
         )
 
         token: JwtTokenValue = self._jwt_service.issue_token(
-            payload={"user_id": str(user.id)},
+            payload={"user_id": str(user.id.value)},
         )
 
         await self._user_repo.update(user=user)
         await self._transactional_manager.commit()
+
+        events: list[DomainEvent] = user.pull_events()
+        await self._event_bus.publish(events)
 
         return token
 
