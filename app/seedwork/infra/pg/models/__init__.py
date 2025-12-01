@@ -1,10 +1,20 @@
 from .role import RoleOrm
-from .user import UserOrm
 from .common import BaseOrm
+from modules.auth.infra.pg.models import UserAuthOrm as UserAuthOrm
+from modules.event.infra.pg.models import (
+    EventOrm,
+    AddressOrm,
+    BuildingOrm,
+    UserEventOrm as UserEventOrm,
+)
 
 
 __all__ = (
     "BaseOrm",
     "RoleOrm",
-    "UserOrm",
+    "UserAuthOrm",
+    "EventOrm",
+    "AddressOrm",
+    "BuildingOrm",
+    "UserEventOrm",
 )
