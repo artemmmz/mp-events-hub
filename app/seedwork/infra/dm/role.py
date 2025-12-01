@@ -1,9 +1,9 @@
 from sqlalchemy import select
 
-from infra.pg.models import RoleOrm
-from modules.auth.application.interface.dm.sql.roles import IRoleDm
-from seedwork.domain.value_object.user import RoleValue
-from seedwork.infra.dm.alchemy import BaseAlchemyDataMapper
+from seedwork.infra.pg.models import RoleOrm
+from seedwork.application.interface.dm.sql.roles import IRoleDm
+from seedwork.domain.value_objects.role import RoleValue
+from seedwork.infra.dm.base import BaseAlchemyDataMapper
 
 
 class RoleAlchemyDm(
