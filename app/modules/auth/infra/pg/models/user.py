@@ -5,23 +5,23 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from infra.pg.models.role import RoleOrm
+    from seedwork.infra.pg.models.role import RoleOrm
 
 
-from infra.pg.models.common import (
+from seedwork.infra.pg.models.common import (
     BaseOrm,
     UidPkMixin,
     UpdatedAtMixin,
     CreatedAtMixin,
 )
 
-class UserOrm(
+class UserAuthOrm(
     BaseOrm,
     UidPkMixin,
     UpdatedAtMixin,
     CreatedAtMixin,
 ):
-    __tablename__ = "users"
+    __tablename__ = "users_auth"
 
     name: Mapped[str]
     second_name: Mapped[str]
@@ -30,6 +30,6 @@ class UserOrm(
     hash_password: Mapped[bytes]
     email_confirm: Mapped[bool]
 
-    role: Mapped["RoleOrm"] = relationship(back_populates="users")
+    role: Mapped["RoleOrm"] = relationship(back_populates="auth_users")
 
     role_uid: Mapped[UUID] = mapped_column(ForeignKey("roles.uid"))
