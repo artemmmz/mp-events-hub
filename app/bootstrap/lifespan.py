@@ -8,7 +8,8 @@ from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
 from bootstrap.ioc import get_container
-from delivery.api.events import router
+from modules.email.delivery.api import email_router
+from modules.event.delivery.api.events import event_router
 
 
 @asynccontextmanager
@@ -18,7 +19,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     async with container() as cont:
         faststream: FastStream = await cont.get(FastStream)
         broker: RabbitBroker = await cont.get(RabbitBroker)
-        broker.include_router(router)
+        broker.include_router(email_router)
+        broker.include_router(event_router)
 
         task = asyncio.create_task(faststream.run())
 

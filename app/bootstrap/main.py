@@ -4,8 +4,9 @@ from dishka.integrations.fastapi import setup_dishka
 
 from bootstrap.ioc import get_container
 from bootstrap.lifespan import lifespan
-from delivery.api import v1_router
-from delivery.exceptions.handler import register_exception_handlers
+from modules.auth.delivery.api.http import auth_router
+from modules.event.delivery.api.http import event_router
+from bootstrap.exceptions.handler import register_exception_handlers
 
 
 def create_app() -> FastAPI:
@@ -17,7 +18,8 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         root_path="/api",
     )
-    app.include_router(v1_router)
+    app.include_router(auth_router)
+    app.include_router(event_router)
     register_exception_handlers(app=app)
 
     return app
