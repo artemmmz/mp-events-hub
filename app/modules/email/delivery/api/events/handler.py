@@ -1,22 +1,21 @@
 from faststream.rabbit import RabbitRouter
 
 from bootstrap.ioc import get_container
-from modules.auth.domain.events import RegistrationRequestedUserEvent
+from seedwork.domain.events.auth import RequestedRegistrationUserEvent
 from modules.email.application.send_confirm_code import (
     SendConfirmCodeUseCase,
     SendConfirmCodeCommand,
 )
-from modules.email.infra.rmq.queues import REGISTRATION_REQUESTED_USER_EVENT_QUEUE
-
+from seedwork.infra.rmq.queues import REQUESTED_REGISTRATION_USER_EVENT_QUEUE
 
 router = RabbitRouter()
 
 
 @router.subscriber(
-    queue=REGISTRATION_REQUESTED_USER_EVENT_QUEUE,
+    queue=REQUESTED_REGISTRATION_USER_EVENT_QUEUE,
 )
 async def send_verification_code(
-    event: RegistrationRequestedUserEvent,
+    event: RequestedRegistrationUserEvent,
 ) -> None:
     container = get_container()
 
