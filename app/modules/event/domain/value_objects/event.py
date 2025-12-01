@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from modules.events.domain.value_objects.exceptions import EventInPastException
+from modules.event.domain.value_objects.exceptions import EventInPastException
 from seedwork.domain.value_objects.common.base import (
     BaseSimpleValueObject,
 )

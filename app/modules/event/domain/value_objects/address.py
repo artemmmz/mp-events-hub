@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 import re
 
-from modules.events.domain.value_objects.exceptions import (
+from modules.event.domain.value_objects.exceptions import (
     InvalidBuildingBlockException,
     InvalidAuditoriumException,
 )
@@ -61,8 +61,8 @@ class BuildingBlockValue(BaseSimpleValueObject[str]):
     def validate(self) -> None:
         value = self._value.strip()
 
-        # Допустимо: '2', '5а', '12A', '3Б'
-        pattern = r"^[0-9]+[A-Za-zА-Яа-я]?$"
+        # Допустимо: 'а' '2', '5а', '12A', '3Б'
+        pattern = r"^[0-9]+[A-Za-zА-Яа-я]?$|^[A-Za-zА-Яа-я]$"
         if not re.match(pattern, value):
             raise InvalidBuildingBlockException(value=value)
 
