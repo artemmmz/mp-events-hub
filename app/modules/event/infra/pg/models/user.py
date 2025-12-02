@@ -34,3 +34,7 @@ class UserEventOrm(
     events_created: Mapped[list["EventOrm"]] = relationship(
         back_populates="created_by_user",
     )
+    registered_events: Mapped[list["EventOrm"]] = relationship(
+        back_populates="registered_users",
+        secondary="a_events_users",
+    )
