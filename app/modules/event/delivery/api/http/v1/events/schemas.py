@@ -17,3 +17,8 @@ class CreateEventInSchema(BaseModel):
 
 class CreateEventOutSchema(BaseModel):
     event_id: UUID
+
+
+class RegisterForEventOutSchema(BaseModel):
+    user_id: UUID
+    event_id: UUID
