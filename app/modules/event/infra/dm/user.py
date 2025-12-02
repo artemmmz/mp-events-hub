@@ -18,6 +18,7 @@ class IUserDm(
         self,
         _id: UUID,
         events_created_load: bool,
+        registered_events_load: bool,
     ) -> UserEventOrm:
         ...
 
@@ -30,12 +31,18 @@ class UserAlchemyDm(
         self,
         _id: UUID,
         events_created_load: bool,
+        registered_events_load: bool,
     ) -> UserEventOrm:
         query = select(UserEventOrm).where(UserEventOrm.uid == _id)
 
         if events_created_load:
-            query.options(
+            query = query.options(
                 selectinload(UserEventOrm.events_created)
+            )
+
+        if registered_events_load:
+            query = query.options(
+                selectinload(UserEventOrm.registered_events)
             )
 
         result = await self._session.execute(query)

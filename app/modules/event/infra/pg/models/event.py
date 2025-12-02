@@ -40,3 +40,7 @@ class EventOrm(
     address: Mapped[Optional["AddressOrm"]] = relationship(
         back_populates="event",
     )
+    registered_users: Mapped[list["UserEventOrm"]] = relationship(
+        back_populates="registered_events",
+        secondary="a_events_users",
+    )

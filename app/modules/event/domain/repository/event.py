@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from modules.event.domain.aggregate.event import Event
 from seedwork.domain.repository import BaseRepository
+from seedwork.domain.value_objects.common.entity import EntityIdValue
 
 
 class IEventRepository(
@@ -10,4 +11,8 @@ class IEventRepository(
 ):
     @abstractmethod
     async def create(self, event: Event) -> None:
+        ...
+
+    @abstractmethod
+    async def get_by_id(self, _id: EntityIdValue) -> Event:
         ...

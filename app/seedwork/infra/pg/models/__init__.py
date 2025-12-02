@@ -5,7 +5,8 @@ from modules.event.infra.pg.models import (
     EventOrm,
     AddressOrm,
     BuildingOrm,
-    UserEventOrm as UserEventOrm,
+    UserEventOrm,
+    EventRegistrationOrm,
 )
 
 
@@ -17,4 +18,5 @@ __all__ = (
     "AddressOrm",
     "BuildingOrm",
     "UserEventOrm",
+    "EventRegistrationOrm",
 )
