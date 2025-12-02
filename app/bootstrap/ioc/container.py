@@ -29,6 +29,8 @@ from bootstrap.ioc.providers.modules.email import (
 )
 from bootstrap.ioc.providers.modules.event import (
     MapperEventProvider,
+    RuleDomainProvider,
+    ServiceDomainEventProvider,
     UseCaseEventProvider,
     DmEventProvider,
     RepositoryEventProvider,
@@ -55,6 +57,8 @@ DEV_PROVIDERS: list[Provider] = [
     SmtpProvider(),
     InfraEmailUseCaseProvider(),
     MapperEventProvider(),
+    RuleDomainProvider(),
+    ServiceDomainEventProvider(),
     UseCaseEventProvider(),
     DmEventProvider(),
     RepositoryEventProvider(),
