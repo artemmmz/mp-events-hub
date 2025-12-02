@@ -6,7 +6,7 @@ from modules.event.infra.pg.models.address import (
 )
 from modules.event.domain.value_objects.address import (
     BuildingValue,
-    AddressValue,
+    AddressValue, CityValue, StreetValue, BuildingBlockValue, BuildingNumberValue, AuditoriumValue,
 )
 from seedwork.domain.mapper import BaseMapper
 
@@ -27,6 +27,16 @@ class AddressMapper(BaseMapper):
             building=building_orm,
         )
 
+    def to_value_object(self, address_orm: AddressOrm) -> AddressValue:
+        building_vo: BuildingValue = self._building_mapper.to_value_object(
+            building_orm=address_orm.building,
+        )
+
+        return AddressValue(
+            city=CityValue(address_orm.city),
+            street=StreetValue(address_orm.street),
+            building=building_vo,
+        )
 
 class BuildingMapper(BaseMapper):
     @staticmethod
@@ -35,4 +45,12 @@ class BuildingMapper(BaseMapper):
             number=building.number.value,
             block=building.block.value,
             auditorium=building.auditorium.value,
+        )
+
+    @staticmethod
+    def to_value_object(building_orm: BuildingOrm) -> BuildingValue:
+        return BuildingValue(
+            number=BuildingNumberValue(building_orm.number),
+            block=BuildingBlockValue(building_orm.block),
+            auditorium=AuditoriumValue(building_orm.auditorium),
         )
