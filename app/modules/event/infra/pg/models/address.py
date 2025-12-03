@@ -22,11 +22,13 @@ class AddressOrm(
     city: Mapped[str]
     street: Mapped[str]
     event_uid: Mapped[UUID] = mapped_column(
-        ForeignKey("events.uid"),
+        ForeignKey("events.uid", ondelete="CASCADE"),
     )
 
     building: Mapped["BuildingOrm"] = relationship(
         back_populates="address",
+        cascade="delete, delete-orphan",
+        passive_deletes=True,
     )
     event: Mapped["EventOrm"] = relationship(
         back_populates="address",
@@ -44,7 +46,8 @@ class BuildingOrm(
     auditorium: Mapped[str | None]
 
     address_uid: Mapped[UUID] = mapped_column(
-        ForeignKey("addresses.uid"),
+        ForeignKey(
+            "addresses.uid", ondelete="CASCADE"),
     )
 
     address: Mapped["AddressOrm"] = relationship(
