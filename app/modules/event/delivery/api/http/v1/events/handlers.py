@@ -8,6 +8,7 @@ from dishka.integrations.fastapi import (
 from fastapi import APIRouter, Depends
 from starlette.status import (
     HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
     HTTP_404_NOT_FOUND,
@@ -22,6 +23,10 @@ from modules.event.application.use_cases.event.register_user import (
     RegisterForEventUseCase,
     RegisterForEventCommand,
 )
+from modules.event.application.use_cases.event.delete import (
+    DeleteEventUseCase,
+    DeleteEventCommand,
+)
 from modules.event.delivery.api.http.v1.events.schemas import (
     CreateEventInSchema,
     CreateEventOutSchema,
@@ -34,12 +39,13 @@ from seedwork.delivery.jwt_utils import get_user_id
 
 router = APIRouter(
     prefix="/events",
+    tags=["Events"],
     route_class=DishkaRoute,
 )
 
 
 @router.post(
-    path="/create",
+    path="/",
     response_model=CreateEventOutSchema,
     status_code=HTTP_201_CREATED,
     summary="Create a new event",
@@ -72,6 +78,33 @@ async def create_event(
     event: Event = await use_case.act(command)
 
     return CreateEventOutSchema(event_id=event.id.value)
+
+
+@router.delete(
+    path="/{event_id}",
+    response_model=None,
+    status_code=HTTP_204_NO_CONTENT,
+    summary="Delete event",
+    responses={
+        HTTP_204_NO_CONTENT: {"model": None, "description": "Delete event"},
+        HTTP_400_BAD_REQUEST: {"model": ErrorSchema, "description": "Invalid input"},
+        HTTP_401_UNAUTHORIZED: {"model": ErrorSchema, "description": "Unauthorized"},
+        HTTP_404_NOT_FOUND: {"model": ErrorSchema, "description": "Resource not found"},
+        HTTP_409_CONFLICT: {"model": ErrorSchema, "description": "Conflict rules"},
+    }
+)
+@inject
+async def delete_event(
+    event_id: UUID,
+    use_case: FromDishka[DeleteEventUseCase],
+    user_id: UUID = Depends(get_user_id),
+) -> None:
+    command = DeleteEventCommand(
+        event_id=event_id,
+        user_id=user_id,
+    )
+
+    await use_case.act(command)
 
 
 @router.post(
