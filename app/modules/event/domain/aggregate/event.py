@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
 from modules.event.domain.aggregate.exceptions import (
@@ -21,6 +21,7 @@ from modules.event.domain.value_objects.event import (
     ScheduledAtValue,
     DescriptionValue,
 )
+from modules.event.domain.value_objects.exceptions import EventInPastException
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.events.events import DeleteEventEvent
 from seedwork.domain.value_objects.common.entity import EntityIdValue
@@ -48,6 +49,11 @@ class Event(BaseAggregate):
         block: str | None,
         auditorium: str | None,
     ) -> "Event":
+        dt_now: datetime = datetime.now(tz=timezone.utc)
+
+        if scheduled_at < dt_now:
+            raise EventInPastException(value=scheduled_at)
+
         address_vo: AddressValue | None = None
 
         if city and street and building_number is not None:
