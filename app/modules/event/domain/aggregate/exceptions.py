@@ -26,3 +26,19 @@ class UserRoleNotAllowedException(AggregateException):
     @property
     def message(self) -> str:
         return f"Пользователь с ролью '{self.role}' не может создавать событие."
+
+
+@dataclass
+class DeleteNotAllowed(AggregateException):
+    role: str
+
+    @property
+    def message(self) -> str:
+        return f"Роль '{self.role}' не может удалять событие."
+
+
+@dataclass
+class OrganizerCannotDeleteForeignEvent(AggregateException):
+    @property
+    def message(self) -> str:
+        return "Организатор не может удалять чужое событие."
