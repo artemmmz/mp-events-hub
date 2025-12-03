@@ -25,6 +25,7 @@ class EventAlchemyRepository(
         user_orm: UserEventOrm = await self._user_dm.get_by_id(
             _id=event.created_by_user_id.value,
             events_created_load=False,
+            registered_events_load=False,
         )
 
         event_orm.created_by_user = user_orm
@@ -37,3 +38,6 @@ class EventAlchemyRepository(
         event: Event = self._mapper.to_entity(event_orm=event_orm)
 
         return event
+
+    async def delete(self, _id: EntityIdValue) -> None:
+        await self._event_dm.delete(_id=_id.value)

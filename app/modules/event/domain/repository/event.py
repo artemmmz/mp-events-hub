@@ -16,3 +16,7 @@ class IEventRepository(
     @abstractmethod
     async def get_by_id(self, _id: EntityIdValue) -> Event:
         ...
+
+    @abstractmethod
+    async def delete(self, _id: EntityIdValue) -> None:
+        ...
