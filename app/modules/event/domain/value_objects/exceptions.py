@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 from seedwork.domain.value_objects.common.exceptions import ValueException
 
@@ -23,7 +24,7 @@ class InvalidAuditoriumException(ValueException):
 
 @dataclass(eq=False)
 class EventInPastException(ValueException):
-    value: str
+    value: datetime
 
     @property
     def message(self) -> str:

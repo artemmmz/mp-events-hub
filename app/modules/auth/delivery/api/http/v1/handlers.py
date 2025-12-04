@@ -40,6 +40,7 @@ from seedwork.domain.value_objects.jwt import JwtTokenValue
 
 router = APIRouter(
     prefix="/auth",
+    tags=["Auth"],
     route_class=DishkaRoute,
 )
 

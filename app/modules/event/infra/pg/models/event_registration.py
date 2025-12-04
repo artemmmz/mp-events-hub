@@ -24,6 +24,6 @@ class EventRegistrationOrm(
         primary_key=True,
     )
     event_uid: Mapped[UUID] = mapped_column(
-        ForeignKey("events.uid"),
+        ForeignKey("events.uid", ondelete="CASCADE"),
         primary_key=True,
     )

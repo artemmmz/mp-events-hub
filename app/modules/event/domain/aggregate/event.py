@@ -1,8 +1,12 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID
 
-from modules.event.domain.aggregate.exceptions import AddressFormatException
+from modules.event.domain.aggregate.exceptions import (
+    AddressFormatException,
+    DeleteNotAllowed,
+    OrganizerCannotDeleteForeignEvent,
+)
 from modules.event.domain.value_objects.address import (
     AddressValue,
     CityValue,
@@ -17,8 +21,11 @@ from modules.event.domain.value_objects.event import (
     ScheduledAtValue,
     DescriptionValue,
 )
+from modules.event.domain.value_objects.exceptions import EventInPastException
 from seedwork.domain.aggregate.base import BaseAggregate
+from seedwork.domain.events.events import DeleteEventEvent
 from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.role import RoleValue
 
 
 @dataclass
@@ -42,6 +49,11 @@ class Event(BaseAggregate):
         block: str | None,
         auditorium: str | None,
     ) -> "Event":
+        dt_now: datetime = datetime.now(tz=timezone.utc)
+
+        if scheduled_at < dt_now:
+            raise EventInPastException(value=scheduled_at)
+
         address_vo: AddressValue | None = None
 
         if city and street and building_number is not None:
@@ -77,3 +89,22 @@ class Event(BaseAggregate):
             address=address_vo,
             description=DescriptionValue(description),
         )
+
+    def delete(
+        self,
+        requester_user_id: EntityIdValue,
+        requester_role: RoleValue,
+    ) -> None:
+        if requester_role == RoleValue.USER:
+            raise DeleteNotAllowed(
+                role=requester_role.value,
+            )
+
+        is_organizer = requester_role != RoleValue.ORGANIZER
+        user_not_equal = self.created_by_user_id != requester_user_id
+
+        if is_organizer and user_not_equal:
+            raise OrganizerCannotDeleteForeignEvent()
+
+        event = DeleteEventEvent(d_event_id=self.id.value)
+        self.register_event(event)

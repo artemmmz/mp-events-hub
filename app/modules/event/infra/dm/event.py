@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.orm import joinedload
 
 from modules.event.infra.pg.models import EventOrm, AddressOrm
@@ -18,6 +18,10 @@ class IEventDm(
         self,
         _id: UUID,
     ) -> EventOrm:
+        ...
+
+    @abstractmethod
+    async def delete(self, _id: UUID) -> None:
         ...
 
 
@@ -47,4 +51,10 @@ class EventAlchemyDm(
 
         raise MissingRequiredFieldException(
             required_field="event.uid",
+        )
+
+    async def delete(self, _id: UUID) -> None:
+        await self._session.execute(
+            delete(EventOrm)
+            .where(EventOrm.uid == _id)
         )

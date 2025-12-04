@@ -39,6 +39,7 @@ class EventOrm(
     )
     address: Mapped[Optional["AddressOrm"]] = relationship(
         back_populates="event",
+        cascade="all, delete-orphan",
     )
     registered_users: Mapped[list["UserEventOrm"]] = relationship(
         back_populates="registered_events",
