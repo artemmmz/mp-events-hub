@@ -27,7 +27,7 @@ class AddressOrm(
 
     building: Mapped["BuildingOrm"] = relationship(
         back_populates="address",
-        cascade="delete, delete-orphan",
+        cascade="delete, delete-orphan, save-update, merge",
         passive_deletes=True,
     )
     event: Mapped["EventOrm"] = relationship(

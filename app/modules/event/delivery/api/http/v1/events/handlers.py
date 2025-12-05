@@ -7,6 +7,7 @@ from dishka.integrations.fastapi import (
 )
 from fastapi import APIRouter, Depends
 from starlette.status import (
+    HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
@@ -27,10 +28,16 @@ from modules.event.application.use_cases.event.delete import (
     DeleteEventUseCase,
     DeleteEventCommand,
 )
+from modules.event.application.use_cases.event.update import (
+    UpdateEventUseCase,
+    UpdateEventCommand,
+)
 from modules.event.delivery.api.http.v1.events.schemas import (
     CreateEventInSchema,
     CreateEventOutSchema,
     RegisterForEventOutSchema,
+    UpdateEventInSchema,
+    UpdateEventOutSchema,
 )
 from modules.event.domain.aggregate.event import Event
 from modules.event.domain.aggregate.event_registration import EventRegistration
@@ -105,6 +112,46 @@ async def delete_event(
     )
 
     await use_case.act(command)
+
+
+@router.patch(
+    path="/{event_id}",
+    response_model=UpdateEventOutSchema,
+    status_code=HTTP_200_OK,
+    summary="Update event",
+    responses={
+        HTTP_200_OK: {"model": UpdateEventOutSchema, "description": "Update event"},
+        HTTP_400_BAD_REQUEST: {"model": ErrorSchema, "description": "Invalid input"},
+        HTTP_401_UNAUTHORIZED: {"model": ErrorSchema, "description": "Unauthorized"},
+        HTTP_404_NOT_FOUND: {"model": ErrorSchema, "description": "Resource not found"},
+        HTTP_409_CONFLICT: {"model": ErrorSchema, "description": "Conflict rules"},
+    }
+)
+@inject
+async def update_event(
+    event_id: UUID,
+    schema: UpdateEventInSchema,
+    use_case: FromDishka[UpdateEventUseCase],
+    user_id: UUID = Depends(get_user_id),
+) -> UpdateEventOutSchema:
+    command = UpdateEventCommand(
+        event_id=event_id,
+        user_id=user_id,
+        title=schema.title,
+        scheduled_at=schema.scheduled_at,
+        description=schema.description,
+        city=schema.city,
+        street=schema.street,
+        building_number=schema.building_number,
+        block=schema.block,
+        auditorium=schema.auditorium,
+    )
+
+    event: Event = await use_case.act(command)
+
+    return UpdateEventOutSchema(
+        event_id=event.id.value,
+    )
 
 
 @router.post(

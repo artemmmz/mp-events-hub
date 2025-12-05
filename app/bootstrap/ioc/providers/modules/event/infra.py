@@ -53,13 +53,15 @@ class RepositoryEventProvider(Provider):
     def event(
         self,
         session: AsyncSession,
-        mapper: EventMapper,
+        event_mapper: EventMapper,
+        address_mapper: AddressMapper,
         event_dm: IEventDm,
         user_dm: IUserDm,
     ) -> IEventRepository:
         return EventAlchemyRepository(
             _session=session,
-            _mapper=mapper,
+            _event_mapper=event_mapper,
+            _address_mapper=address_mapper,
             _event_dm=event_dm,
             _user_dm=user_dm,
         )

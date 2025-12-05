@@ -24,6 +24,7 @@ from modules.event.domain.value_objects.event import (
 from modules.event.domain.value_objects.exceptions import EventInPastException
 from seedwork.domain.aggregate.base import BaseAggregate
 from seedwork.domain.events.events import DeleteEventEvent
+from seedwork.domain.marker import EMPTY
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.role import RoleValue
 
@@ -43,9 +44,9 @@ class Event(BaseAggregate):
         title: str,
         scheduled_at: datetime,
         description: str,
-        city: str,
-        street: str,
-        building_number: int,
+        city: str | None,
+        street: str | None,
+        building_number: int | None,
         block: str | None,
         auditorium: str | None,
     ) -> "Event":
@@ -53,6 +54,13 @@ class Event(BaseAggregate):
 
         if scheduled_at < dt_now:
             raise EventInPastException(value=scheduled_at)
+
+        if 3 > sum(v is not None for v in [city, street, building_number]) > 0:
+            raise AddressFormatException(
+                city=city,
+                street=street,
+                building_number=building_number,
+            )
 
         address_vo: AddressValue | None = None
 
@@ -73,13 +81,6 @@ class Event(BaseAggregate):
                 city=CityValue(_value=city),
                 street=StreetValue(_value=street),
                 building=building_vo,
-            )
-
-        if 3 > sum(v is not None for v in [city, street, building_number]) > 0:
-            raise AddressFormatException(
-                city=city,
-                street=street,
-                building_number=building_number,
             )
 
         return Event(
@@ -108,3 +109,79 @@ class Event(BaseAggregate):
 
         event = DeleteEventEvent(d_event_id=self.id.value)
         self.register_event(event)
+
+    def update(
+        self,
+        requester_user_id: UUID,
+        requester_role: RoleValue,
+        title: str | None,
+        scheduled_at: datetime | None,
+        description: str | None,
+        city: str | None,
+        street: str | None,
+        building_number: int | None,
+        block: str | None,
+        auditorium: str | None,
+    ) -> None:
+        # check role
+        if requester_role == RoleValue.USER:
+            raise DeleteNotAllowed(
+                role=requester_role.value,
+            )
+
+        is_organizer = requester_role != RoleValue.ORGANIZER
+        user_not_equal = self.created_by_user_id != requester_user_id
+
+        if is_organizer and user_not_equal:
+            raise OrganizerCannotDeleteForeignEvent()
+
+        # check other rules
+        dt_now: datetime = datetime.now(tz=timezone.utc)
+
+        if title is not EMPTY:
+            self.title = TitleValue(title)
+
+        if scheduled_at is not EMPTY:
+            if scheduled_at is not None and scheduled_at < dt_now:
+                raise EventInPastException(value=scheduled_at)
+
+            self.scheduled_at = ScheduledAtValue(scheduled_at)
+
+        if description is not EMPTY:
+            self.description = DescriptionValue(description)
+
+        if any(arg is not EMPTY for arg in [city, street, building_number, block, auditorium]):
+
+            new_city = city if city is not EMPTY else self.address.city._value if self.address else None
+            new_street = street if street is not EMPTY else self.address.street._value if self.address else None
+            new_building_number = building_number if building_number is not EMPTY else (
+                self.address.building.number._value if self.address and self.address.building.number else None
+            )
+            new_block = block if block is not EMPTY else (
+                self.address.building.block._value if self.address and self.address.building.block else None
+            )
+            new_auditorium = auditorium if auditorium is not EMPTY else (
+                self.address.building.auditorium._value if self.address and self.address.building.auditorium else None
+            )
+
+            if 3 > sum(v is not None for v in [new_city, new_street, new_building_number]) > 0:
+                raise AddressFormatException(
+                    city=new_city,
+                    street=new_street,
+                    building_number=new_building_number,
+                )
+
+            address_vo: AddressValue | None = None
+            if new_city and new_street and new_building_number is not None:
+                building_vo = BuildingValue(
+                    number=BuildingNumberValue(new_building_number),
+                    block=BuildingBlockValue(new_block) if new_block else None,
+                    auditorium=AuditoriumValue(new_auditorium) if new_auditorium else None,
+                )
+                address_vo = AddressValue(
+                    city=CityValue(new_city),
+                    street=StreetValue(new_street),
+                    building=building_vo,
+                )
+
+            self.address = address_vo

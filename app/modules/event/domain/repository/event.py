@@ -20,3 +20,7 @@ class IEventRepository(
     @abstractmethod
     async def delete(self, _id: EntityIdValue) -> None:
         ...
+
+    @abstractmethod
+    async def update(self, event: Event) -> Event:
+        ...

@@ -32,9 +32,13 @@ class EventMapper(BaseMapper):
         )
 
     def to_entity(self, event_orm: EventOrm) -> Event:
-        address_vo: AddressValue = self._address_mapper.to_value_object(
-            address_orm=event_orm.address,
-        )
+        address_vo: AddressValue | None = None
+
+        if event_orm.address:
+            address_vo = self._address_mapper.to_value_object(
+                address_orm=event_orm.address,
+            )
+
         return Event(
             id=EntityIdValue(event_orm.uid),
             created_at=event_orm.created_at,
