@@ -41,16 +41,28 @@ class AddressMapper(BaseMapper):
 class BuildingMapper(BaseMapper):
     @staticmethod
     def to_orm(building: BuildingValue) -> BuildingOrm:
+        block: str | None = building.block.value if building.block else None
+        auditorium: str | None = building.auditorium.value if building.auditorium else None
+
         return BuildingOrm(
             number=building.number.value,
-            block=building.block.value,
-            auditorium=building.auditorium.value,
+            block=block,
+            auditorium=auditorium,
         )
 
     @staticmethod
     def to_value_object(building_orm: BuildingOrm) -> BuildingValue:
+        block: BuildingBlockValue | None = None
+        auditorium: AuditoriumValue | None = None
+
+        if building_orm.block:
+            block = BuildingBlockValue(building_orm.block)
+
+        if building_orm.auditorium:
+            auditorium = AuditoriumValue(building_orm.auditorium)
+
         return BuildingValue(
             number=BuildingNumberValue(building_orm.number),
-            block=BuildingBlockValue(building_orm.block),
-            auditorium=AuditoriumValue(building_orm.auditorium),
+            block=block,
+            auditorium=auditorium,
         )
