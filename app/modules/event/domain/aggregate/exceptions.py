@@ -42,3 +42,10 @@ class OrganizerCannotDeleteForeignEvent(AggregateException):
     @property
     def message(self) -> str:
         return "Организатор не может удалять чужое событие."
+
+
+@dataclass
+class CannotUnregisterOtherEvent(AggregateException):
+    @property
+    def message(self) -> str:
+        return "Можно отменять только свою регистрацию на событие."
