@@ -8,6 +8,7 @@ from modules.event.application.use_cases.auth.confirm import (
 )
 from modules.event.application.use_cases.event.delete import DeleteEventUseCase
 from modules.event.application.use_cases.event.register_user import RegisterForEventUseCase
+from modules.event.application.use_cases.event.unregister_user import UnregisterForEventUseCase
 from modules.event.application.use_cases.event.update import UpdateEventUseCase
 from modules.event.domain.repository.event import IEventRepository
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
@@ -85,6 +86,19 @@ class UseCaseEventProvider(Provider):
             _event_registration_service=event_registration_service,
             _event_repo=event_repo,
             _user_repo=user_repo,
+            _event_registration_repo=event_registration_repo,
+            _transactional_manager=transactional_manager,
+        )
+
+    @provide
+    def unregister_for_event(
+        self,
+        event_registration_service: EventRegistrationService,
+        event_registration_repo: IEventRegistrationRepository,
+        transactional_manager: ITransactionManager,
+    ) -> UnregisterForEventUseCase:
+        return UnregisterForEventUseCase(
+            _event_registration_service=event_registration_service,
             _event_registration_repo=event_registration_repo,
             _transactional_manager=transactional_manager,
         )
