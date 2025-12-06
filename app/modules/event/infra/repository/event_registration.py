@@ -5,7 +5,9 @@ from sqlalchemy import select, and_
 from modules.event.domain.aggregate.event_registration import EventRegistration
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
 from modules.event.infra.dm.event import IEventDm
+from modules.event.infra.dm.event_registration import IEventRegistrationDm
 from modules.event.infra.dm.user import IUserDm
+from modules.event.infra.mappers.event_registration import EventRegistrationMapper
 from modules.event.infra.pg.models import EventRegistrationOrm, UserEventOrm, EventOrm
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.infra.repository.alchemy import BaseAlchemyRepository
@@ -18,8 +20,13 @@ class EventRegistrationAlchemyRepository(
 ):
     _user_dm: IUserDm
     _event_dm: IEventDm
+    _event_registration_dm: IEventRegistrationDm
+    _mapper: EventRegistrationMapper
 
-    async def create(self, event_registration: EventRegistration) -> None:
+    async def create(
+        self,
+        event_registration: EventRegistration,
+    ) -> None:
         user_orm: UserEventOrm = await self._user_dm.get_by_id(
             _id=event_registration.user_id.value,
             events_created_load=False,
@@ -30,6 +37,30 @@ class EventRegistrationAlchemyRepository(
         )
 
         user_orm.registered_events.append(event_orm)
+
+    async def get_by_id(
+        self,
+        user_id: EntityIdValue,
+        event_id: EntityIdValue,
+    ) -> EventRegistration:
+        event_registration_orm: EventRegistrationOrm = await (
+            self._event_registration_dm.get_by_id(
+                user_id=user_id.value,
+                event_id=event_id.value,
+            )
+        )
+
+        event_registration: EventRegistration = self._mapper.to_entity(
+            event_registration_orm=event_registration_orm,
+        )
+
+        return event_registration
+
+    async def delete(
+        self,
+        event_registration: EventRegistration,
+    ) -> None:
+        await self._event_registration_dm.delete(_id=event_registration.id.value)
 
     async def exists(
         self,
