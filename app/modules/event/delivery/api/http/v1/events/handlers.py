@@ -28,6 +28,10 @@ from modules.event.application.use_cases.event.delete import (
     DeleteEventUseCase,
     DeleteEventCommand,
 )
+from modules.event.application.use_cases.event.unregister_user import (
+    UnregisterForEventUseCase,
+    UnregisterForEventCommand,
+)
 from modules.event.application.use_cases.event.update import (
     UpdateEventUseCase,
     UpdateEventCommand,
@@ -44,11 +48,21 @@ from modules.event.domain.aggregate.event_registration import EventRegistration
 from seedwork.delivery.api.http.schemas import ErrorSchema
 from seedwork.delivery.jwt_utils import get_user_id
 
+
+register_router = APIRouter(
+    prefix="/events",
+    tags=["Events", "Register"],
+    route_class=DishkaRoute,
+)
+
+
 router = APIRouter(
     prefix="/events",
     tags=["Events"],
     route_class=DishkaRoute,
 )
+router.include_router(register_router)
+
 
 
 @router.post(
@@ -154,7 +168,7 @@ async def update_event(
     )
 
 
-@router.post(
+@register_router.post(
     path="/{event_id}/registrations",
     response_model=RegisterForEventOutSchema,
     status_code=HTTP_201_CREATED,
@@ -184,3 +198,30 @@ async def register_for_event(
         user_id=event_registration.user_id.value,
         event_id=event_registration.event_id.value
     )
+
+
+@register_router.delete(
+    path="/{event_id}/registrations",
+    response_model=None,
+    status_code=HTTP_204_NO_CONTENT,
+    summary="Delete registration for the event",
+    responses={
+        HTTP_204_NO_CONTENT: {"model": None, "description": "Delete registration for event"},
+        HTTP_400_BAD_REQUEST: {"model": ErrorSchema, "description": "Invalid input"},
+        HTTP_401_UNAUTHORIZED: {"model": ErrorSchema, "description": "Unauthorized"},
+        HTTP_404_NOT_FOUND: {"model": ErrorSchema, "description": "Resource not found"},
+        HTTP_409_CONFLICT: {"model": ErrorSchema, "description": "Conflict rules"},
+    }
+)
+@inject
+async def unregister_for_event(
+    event_id: UUID,
+    use_case: FromDishka[UnregisterForEventUseCase],
+    user_id: UUID = Depends(get_user_id),
+) -> None:
+    command = UnregisterForEventCommand(
+        event_id=event_id,
+        user_id=user_id,
+    )
+
+    await use_case.act(command)
