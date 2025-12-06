@@ -25,9 +25,9 @@ def get_user_id(
     except jwt.InvalidTokenError:
         raise # todo дописать Exception
 
-    user_id: UUID | None = payload.get("user_id", None)
+    user_id: str | None = payload.get("user_id", None)
 
     if user_id:
-        return user_id
+        return UUID(user_id)
 
     raise # todo дописать Exception

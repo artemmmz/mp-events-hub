@@ -1,15 +1,16 @@
 from datetime import datetime, timezone
 from uuid import UUID
 
-from uuid_utils import uuid7
 from sqlalchemy import DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
+
+from seedwork.domain.uuid7 import uuid7_native
 
 
 class UidPkMixin:
     uid: Mapped[UUID] = mapped_column(
         primary_key=True,
-        default=uuid7,
+        default=lambda: uuid7_native(),
     )
 
 
