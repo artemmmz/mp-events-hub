@@ -10,7 +10,25 @@ class IEventRegistrationRepository(
     ABC,
 ):
     @abstractmethod
-    async def create(self, event_registration: EventRegistration) -> None:
+    async def create(
+        self,
+        event_registration: EventRegistration,
+    ) -> None:
+        ...
+
+    @abstractmethod
+    async def get_by_id(
+        self,
+        user_id: EntityIdValue,
+        event_id: EntityIdValue,
+    ) -> EventRegistration:
+        ...
+
+    @abstractmethod
+    async def delete(
+        self,
+        event_registration: EventRegistration,
+    ) -> None:
         ...
 
     @abstractmethod

@@ -6,6 +6,7 @@ from modules.event.domain.repository.event_registration import IEventRegistratio
 from modules.event.domain.rules.exceptions import UserAlreadyRegisteredException
 from modules.event.domain.aggregate.user import User
 from modules.event.domain.rules.event_registration import UserRegisteredEventRule
+from seedwork.domain.value_objects.common.entity import EntityIdValue
 
 
 @dataclass
@@ -32,6 +33,20 @@ class EventRegistrationService:
             event_id=event.id.value,
         )
 
-        await self._event_registration_repo.create(registration)
+        return registration
+
+    async def unregister_user_for_event(
+        self,
+        user_id: EntityIdValue,
+        event_id: EntityIdValue,
+    ) -> EventRegistration:
+        registration: EventRegistration = await (
+            self._event_registration_repo.get_by_id(
+                user_id=user_id,
+                event_id=event_id,
+            )
+        )
+
+        registration.delete(requester_user_id=user_id)
 
         return registration
