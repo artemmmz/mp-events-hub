@@ -31,7 +31,6 @@ class UserAlchemyRepository(
     _user_dm: IUserDm
 
     async def create(self, user: User) -> None:
-        print(f"user_entity_uid: {user.id.value}")
         role_orm: RoleOrm = await (
             self._role_dm.get_by_name(role=user.role)
         )
