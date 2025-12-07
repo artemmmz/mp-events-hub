@@ -2,22 +2,33 @@ from typing import Any
 from uuid import UUID
 
 import jwt
-from fastapi import HTTPException, Cookie
+from fastapi import HTTPException, Cookie, Header
 
 from bootstrap.settings import get_settings
 
 
 def get_user_id(
-    access_token: str | None = Cookie(default=None)
+    access_token_cookie: str | None = Cookie(default=None),
+    authorization: str | None = Header(default=None),
 ) -> UUID:
     settings = get_settings()
 
-    if access_token is None:
+    token = None
+
+    # Prefer cookie token
+    if access_token_cookie:
+        token = access_token_cookie
+
+    # Fallback to Authorization header
+    elif authorization and authorization.startswith("Bearer "):
+        token = authorization.removeprefix("Bearer ")
+
+    if token is None:
         raise HTTPException(status_code=401, detail="No access token")
 
     try:
         payload: dict[str, Any] = jwt.decode(
-            access_token,
+            token,
             settings.auth.secret_key,
             algorithms=[settings.auth.algorithm],
         )
@@ -30,4 +41,4 @@ def get_user_id(
     if user_id:
         return UUID(user_id)
 
-    raise # todo дописать Exception
+    raise HTTPException(status_code=401, detail="Invalid token payload")
