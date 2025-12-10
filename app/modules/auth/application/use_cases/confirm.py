@@ -46,7 +46,7 @@ class ConfirmRegisterUseCase(
 
         stored_code_value = ConfirmCodeValue(_value=stored_code)
 
-        user.confirm(
+        user.confirm_register(
             input_code=input_code,
             stored_code=stored_code_value,
         )

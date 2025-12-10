@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import timedelta
+from typing import cast
 
 from modules.auth.application.interface.dm.kvalue.user import IUserKvDm
 from modules.auth.domain.aggregate.user import User
@@ -35,6 +36,8 @@ class ResetPasswordUseCase(
 
         if not user:
             raise UserNotFoundException(email=command.email)
+
+        user = cast(User, user)
 
         confirm_code: ConfirmCodeValue = user.reset_password_request(
             email=email,
