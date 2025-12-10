@@ -38,7 +38,7 @@ class ConfirmRegisterUseCase(
         user: User = await self._user_repo.find_by_id(required_id=user_id)
 
         stored_code: str | None = await (
-            self._user_kv_dm.get_confirm_code(user_id=user_id)
+            self._user_kv_dm.get_confirm_code_by_id(user_id=user_id)
         )
 
         if not stored_code:

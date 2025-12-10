@@ -65,7 +65,7 @@ class RegisterUseCase(
 
         confirm_code: ConfirmCodeValue = user.unconfirmed_registration()
 
-        await self._user_kv_dm.save_confirm_code(
+        await self._user_kv_dm.save_confirm_code_by_id(
             user_id=user.id,
             confirm_code=confirm_code,
             ttl=command.confirm_code_ttl,
