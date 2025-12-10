@@ -76,7 +76,7 @@ class User(BaseAggregate):
             hashed_password=self.hash_password,
         )
 
-    def confirm(
+    def confirm_register(
         self,
         input_code: ConfirmCodeValue,
         stored_code: ConfirmCodeValue,
@@ -112,6 +112,16 @@ class User(BaseAggregate):
 
         return ConfirmCodeValue(confirm_code)
 
+    def reset_password(
+        self,
+        new_password: str,
+        input_code: ConfirmCodeValue,
+        stored_code: ConfirmCodeValue,
+    ) -> None:
+        if input_code != stored_code:
+            raise InvalidConfirmCodeException()
+
+        self.hash_password = self._hash_password(new_password)
 
     @staticmethod
     def _hash_password(password: str) -> bytes:
