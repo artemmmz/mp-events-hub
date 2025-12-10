@@ -97,7 +97,7 @@ class UserAlchemyRepository(
         )
         return result.scalar()
 
-    async def get_by_id(
+    async def find_by_id(
         self,
         required_id: EntityIdValue,
     ) -> User | None:
@@ -118,7 +118,7 @@ class UserAlchemyRepository(
         else:
             return None
 
-    async def get_by_email(
+    async def find_by_email(
         self,
         email: EmailValue,
     ) -> User | None:

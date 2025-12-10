@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
-from modules.auth.domain.repository.user import IUserRepository
+from modules.event.domain.repository.user import IUserRepository
 from modules.event.domain.aggregate.event import Event
 from modules.event.domain.aggregate.user import User
 from modules.event.domain.repository.event import IEventRepository
