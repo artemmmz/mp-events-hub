@@ -42,3 +42,19 @@ class IUserKvDm(
         email: EmailValue,
     ) -> str | None:
         ...
+
+    @abstractmethod
+    async def save_password_by_email(
+        self,
+        email: EmailValue,
+        password: str,
+        ttl: str,
+    ) -> None:
+        ...
+
+    @abstractmethod
+    async def get_password_by_email(
+        self,
+        email: EmailValue,
+    ) -> str | None:
+        ...

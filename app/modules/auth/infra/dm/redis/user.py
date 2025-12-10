@@ -56,3 +56,25 @@ class UserRedisDm(
             return None
 
         return code.decode()
+
+    async def save_password_by_email(
+        self,
+        email: EmailValue,
+        password: str,
+        ttl: timedelta,
+    ) -> None:
+        await self._redis.set(
+            name=f"user:password:{email.value}",
+            value=password,
+            ex=ttl,
+        )
+    async def get_password_by_email(
+        self,
+        email: EmailValue,
+    ) -> str | None:
+        password = await self._redis.get(f"user:password:{email.value}")
+
+        if password is None:
+            return None
+
+        return password.decode()
