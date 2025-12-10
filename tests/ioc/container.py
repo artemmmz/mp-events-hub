@@ -14,15 +14,15 @@ from app.bootstrap.ioc.providers.infra import (
 )
 
 
-async def get_test_container(
+def get_test_container(
     connection_string: str,
-    rmq_url: str,
+    local_rmq_url: str,
     redis: Redis
 ) -> AsyncContainer:
     container: AsyncContainer = make_async_container(
         *DEV_PROVIDERS,
         AlchemyProvider(connection_string=connection_string),
-        FastStreamProvider(connection_string=rmq_url),
+        FastStreamProvider(connection_string=local_rmq_url),
         RedisProvider(redis_client=redis),
     )
 

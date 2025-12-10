@@ -2,7 +2,7 @@ import os
 import sys
 
 import pika
-from asgi_lifespan import LifespanManager
+# from asgi_lifespan import LifespanManager
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from redis.asyncio import Redis
@@ -33,11 +33,30 @@ async def redis_client() -> AsyncGenerator[Redis]:
 
 
 @pytest.fixture(scope="session")
-async def rmq_url() -> AsyncGenerator[str]:
+async def docker_rmq_url() -> AsyncGenerator[str]:
     with RabbitMqContainer() as rmq:
         params = rmq.get_connection_params()
         rmq_url: str = _to_connection_string(params=params)
-        print(f"rmq url: {rmq_url}")
+        yield rmq_url
+
+
+@pytest.fixture(scope="session")
+async def local_rmq_url() -> AsyncGenerator[str]:
+    with RabbitMqContainer() as rmq:
+        params = rmq.get_connection_params()
+
+        username = params.credentials.username
+        password = params.credentials.password
+
+        host = params._host
+        port = params._port
+
+        vhost = params.virtual_host or "/"
+        if vhost == "/":
+            vhost = "%2f"
+
+        rmq_url = f"amqp://{username}:{password}@{host}:{port}/{vhost}"
+
         yield rmq_url
 
 
@@ -75,12 +94,12 @@ def _upgrade_schema_db(alembic_config: AlembicConfig) -> None:
 @pytest.fixture(scope="session")
 async def ioc_container(
     postgres_url: str,
-    rmq_url: str,
+    local_rmq_url: str,
     redis_client: Redis,
 ) -> AsyncContainer:
-    test_container: AsyncContainer = await get_test_container(
+    test_container: AsyncContainer = get_test_container(
         connection_string=postgres_url,
-        rmq_url=rmq_url,
+        local_rmq_url=local_rmq_url,
         redis=redis_client,
     )
 
@@ -90,14 +109,13 @@ async def ioc_container(
 @pytest.fixture(scope="session")
 async def app(
     ioc_container: AsyncContainer,
-) -> AsyncGenerator[FastAPI]:
+) -> FastAPI: # ) -> AsyncGenerator[FastAPI]:
     app = create_app()
     setup_dishka(ioc_container, app)
 
-
-
-    async with LifespanManager(app):
-        yield app
+    return app
+    # async with LifespanManager(app):
+    #     yield app
 
 
 @pytest.fixture(scope="session")

@@ -7,6 +7,8 @@ from modules.auth.application.services.jwt import JwtService
 from modules.auth.domain.aggregate.user import User as UserAuth
 from modules.auth.domain.repository.user import IUserRepository as IUserAuthRepository
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
+from modules.event.domain.repository.user import IUserRepository as IUserEventRepository
+from modules.event.domain.aggregate.user import User as UserEvent
 from seedwork.domain.events.base import DomainEvent
 from seedwork.domain.value_objects.jwt import JwtTokenValue
 from seedwork.domain.value_objects.role import RoleValue
@@ -87,7 +89,7 @@ async def create_user(
     async with test_container() as cont:
         jwt_service: JwtService = await cont.get(JwtService)
         user_auth_repo: IUserAuthRepository = await cont.get(IUserAuthRepository)
-        # user_event_repo: IUserEventRepository = await cont.get(IUserEventRepository)
+        user_event_repo: IUserEventRepository = await cont.get(IUserEventRepository)
         transactional_manager: ITransactionManager = await (
             cont.get(ITransactionManager)
         )
@@ -99,13 +101,13 @@ async def create_user(
         )
         await user_auth_repo.create(user_auth)
 
-        # user_event = UserEvent(
-        #     id=user_auth.id,
-        #     created_at=user_auth.created_at,
-        #     updated_at=user_auth.updated_at,
-        #     role=user_auth.role,
-        # )
-        # await user_event_repo.create(user_event)
+        user_event = UserEvent(
+            id=user_auth.id,
+            created_at=user_auth.created_at,
+            updated_at=user_auth.updated_at,
+            role=user_auth.role,
+        )
+        await user_event_repo.create(user_event)
 
         events: list[DomainEvent] = user_auth.pull_events()
 
