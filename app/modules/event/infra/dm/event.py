@@ -21,6 +21,13 @@ class IEventDm(
         ...
 
     @abstractmethod
+    async def find_by_id(
+        self,
+        _id: UUID,
+    ) -> EventOrm | None:
+        ...
+
+    @abstractmethod
     async def delete(self, _id: UUID) -> None:
         ...
 
@@ -52,6 +59,25 @@ class EventAlchemyDm(
         raise MissingRequiredFieldException(
             required_field="event.uid",
         )
+
+    async def find_by_id(
+        self,
+        _id: UUID,
+    ) -> EventOrm | None:
+        query = (
+            select(EventOrm)
+            .where(EventOrm.uid == _id)
+            .options(
+                joinedload(EventOrm.address)
+                .joinedload(AddressOrm.building)
+            )
+        )
+
+        result = await self._session.execute(query)
+
+        event_orm: EventOrm | None = result.scalar_one_or_none()
+
+        return event_orm
 
     async def delete(self, _id: UUID) -> None:
         await self._session.execute(

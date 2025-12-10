@@ -98,7 +98,7 @@ async def confirm(
     response: Response,
     use_case: FromDishka[ConfirmRegisterUseCase],
 ) -> ConfirmOutSchema:
-    command =ConfirmRegisterCommand(
+    command = ConfirmRegisterCommand(
         user_id=schema.user_id,
         confirm_code=schema.confirm_code,
     )

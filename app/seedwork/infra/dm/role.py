@@ -19,3 +19,6 @@ class RoleAlchemyDm(
         role_orm: RoleOrm | None = result.scalar_one_or_none()
 
         return role_orm
+
+    async def create(self, role_orm: RoleOrm) -> None:
+        self._session.add(role_orm)
