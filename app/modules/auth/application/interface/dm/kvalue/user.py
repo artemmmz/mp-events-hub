@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.user import EmailValue
 from seedwork.infra.dm.base import BaseDataMapper
 
 
@@ -11,7 +12,7 @@ class IUserKvDm(
     ABC,
 ):
     @abstractmethod
-    async def save_confirm_code(
+    async def save_confirm_code_by_id(
         self,
         user_id: EntityIdValue,
         confirm_code: ConfirmCodeValue,
@@ -20,8 +21,24 @@ class IUserKvDm(
         ...
 
     @abstractmethod
-    async def get_confirm_code(
+    async def get_confirm_code_by_id(
         self,
         user_id: EntityIdValue,
+    ) -> str | None:
+        ...
+
+    @abstractmethod
+    async def save_confirm_code_by_email(
+        self,
+        email: EmailValue,
+        confirm_code: ConfirmCodeValue,
+        ttl: timedelta,
+    ) -> None:
+        ...
+
+    @abstractmethod
+    async def get_confirm_code_by_email(
+        self,
+        email: EmailValue,
     ) -> str | None:
         ...
