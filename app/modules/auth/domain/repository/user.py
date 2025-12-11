@@ -32,14 +32,14 @@ class IUserRepository(
         ...
 
     @abstractmethod
-    async def get_by_id(
+    async def find_by_id(
         self,
         required_id: EntityIdValue,
     ) -> User | None:
         ...
 
     @abstractmethod
-    async def get_by_email(
+    async def find_by_email(
         self,
         email: EmailValue,
     ) -> User | None:

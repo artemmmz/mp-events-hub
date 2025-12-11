@@ -3,15 +3,23 @@ from random import randint
 
 import bcrypt
 
-from modules.auth.domain.aggregate.exception import InvalidConfirmCodeException
+from modules.auth.domain.aggregate.exception import (
+    InvalidConfirmCodeException,
+    InvalidEmailException,
+)
 from seedwork.domain.events.auth import (
     RequestedRegistrationUserEvent,
     ConfirmRegistrationUserEvent,
+    RequestResetPasswordEvent,
 )
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
-from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
+from seedwork.domain.value_objects.user import (
+    NameValue,
+    GroupNumberValue,
+    EmailValue,
+)
 
 
 @dataclass
@@ -68,7 +76,7 @@ class User(BaseAggregate):
             hashed_password=self.hash_password,
         )
 
-    def confirm(
+    def confirm_register(
         self,
         input_code: ConfirmCodeValue,
         stored_code: ConfirmCodeValue,
@@ -84,6 +92,35 @@ class User(BaseAggregate):
         )
 
         self.register_event(event)
+
+    def reset_password_request(
+        self,
+        email: EmailValue,
+    ) -> ConfirmCodeValue:
+        confirm_code: str = str(randint(10_000, 99_999))
+
+        if email != self.email:
+            raise InvalidEmailException()
+
+        event = RequestResetPasswordEvent(
+            email=email.value,
+            confirm_code=confirm_code,
+        )
+
+        self.register_event(event=event)
+
+        return ConfirmCodeValue(confirm_code)
+
+    def reset_password(
+        self,
+        new_password: str,
+        input_code: ConfirmCodeValue,
+        stored_code: ConfirmCodeValue,
+    ) -> None:
+        if input_code != stored_code:
+            raise InvalidConfirmCodeException()
+
+        self.hash_password = self._hash_password(new_password)
 
     @staticmethod
     def _hash_password(password: str) -> bytes:

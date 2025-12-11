@@ -14,3 +14,9 @@ class RequestedRegistrationUserEvent(DomainEvent):
 class ConfirmRegistrationUserEvent(DomainEvent):
     user_id: UUID
     role: str
+
+
+@dataclass(frozen=True)
+class RequestResetPasswordEvent(DomainEvent):
+    email: str
+    confirm_code: str

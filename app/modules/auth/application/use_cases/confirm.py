@@ -35,10 +35,10 @@ class ConfirmRegisterUseCase(
         user_id = EntityIdValue(_value=command.user_id)
         input_code = ConfirmCodeValue(_value=command.confirm_code)
 
-        user: User = await self._user_repo.get_by_id(required_id=user_id)
+        user: User = await self._user_repo.find_by_id(required_id=user_id)
 
         stored_code: str | None = await (
-            self._user_kv_dm.get_confirm_code(user_id=user_id)
+            self._user_kv_dm.get_confirm_code_by_id(user_id=user_id)
         )
 
         if not stored_code:
@@ -46,7 +46,7 @@ class ConfirmRegisterUseCase(
 
         stored_code_value = ConfirmCodeValue(_value=stored_code)
 
-        user.confirm(
+        user.confirm_register(
             input_code=input_code,
             stored_code=stored_code_value,
         )

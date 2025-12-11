@@ -95,7 +95,7 @@ async def create_user(
         )
         event_bus: IEventBus = await cont.get(IEventBus)
 
-        user_auth.confirm(
+        user_auth.confirm_register(
             input_code=ConfirmCodeValue("test"),
             stored_code=ConfirmCodeValue("test"),
         )

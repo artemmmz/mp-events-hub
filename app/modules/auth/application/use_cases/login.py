@@ -26,7 +26,7 @@ class LoginUseCase(
     _jwt_service: JwtService
 
     async def act(self, command: LoginCommand) -> JwtTokenValue:
-        user: User | None = await self._user_repo.get_by_email(
+        user: User | None = await self._user_repo.find_by_email(
             email=EmailValue(_value=command.email)
         )
 

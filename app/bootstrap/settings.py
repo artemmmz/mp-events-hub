@@ -63,14 +63,21 @@ class AuthSettings(BaseSettings):
     )
     algorithm: str = Field(default="sha256", alias="AUTH__ALGORITHM")
     confirm_code_ttl_sec_int: int = Field(
-        default=timedelta(minutes=10),
+        default=600,
         alias="AUTH__CONFIRM_CODE_TTL_SEC",
+    )
+    reset_password_ttl_sec_int: int = Field(
+        default=600,
+        alias="AUTH__RESET_PASSWORD_TTL_SEC",
     )
 
     @property
     def confirm_code_ttl_sec(self) -> timedelta:
         return timedelta(seconds=self.confirm_code_ttl_sec_int)
 
+    @property
+    def reset_password_ttl(self) -> timedelta:
+        return timedelta(seconds=self.reset_password_ttl_sec_int)
 
 class EmailSettings(BaseSettings):
     model_config = SettingsConfigDict(
