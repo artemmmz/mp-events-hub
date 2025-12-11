@@ -31,3 +31,21 @@ class LoginInSchema(BaseModel):
 
 class LoginOutSchema(BaseModel):
     jwt_auth_token: str
+
+
+class ResetPasswordInSchema(BaseModel):
+    email: str
+    new_password: str
+
+
+class ResetPasswordOutSchema(BaseModel):
+    pass
+
+
+class ConfirmResetInSchema(BaseModel):
+    confirm_code: str
+    email: str
+
+
+class ConfirmResetOutSchema(BaseModel):
+    token: str
