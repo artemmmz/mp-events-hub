@@ -3,8 +3,10 @@ from dishka import Provider, Scope, provide
 from modules.auth.application.interface.dm.kvalue.user import IUserKvDm
 from modules.auth.application.services.jwt import JwtService
 from modules.auth.application.use_cases.confirm import ConfirmRegisterUseCase
+from modules.auth.application.use_cases.confirm_reset import ConfirmResetPasswordUseCase
 from modules.auth.application.use_cases.login import LoginUseCase
 from modules.auth.application.use_cases.register import RegisterUseCase
+from modules.auth.application.use_cases.reset_password import ResetPasswordUseCase
 from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.domain.rules.user import UniqueEmailRule, UniqueUserRule
 from seedwork.infra.event_bus.base import IEventBus
@@ -59,4 +61,32 @@ class UseCaseAuthProvider(Provider):
         return LoginUseCase(
             _user_repo=user_repo,
             _jwt_service=jwt_service,
+        )
+
+    @provide
+    def reset_password(
+        self,
+        user_repo: IUserRepository,
+        user_dm: IUserKvDm,
+        event_bus: IEventBus,
+    ) -> ResetPasswordUseCase:
+        return ResetPasswordUseCase(
+            _user_repo=user_repo,
+            _user_dm=user_dm,
+            _event_bus=event_bus,
+        )
+
+    @provide
+    def confirm_reset(
+        self,
+        jwt_service: JwtService,
+        user_repo: IUserRepository,
+        user_dm: IUserKvDm,
+        transactional_manager: ITransactionManager,
+    ) -> ConfirmResetPasswordUseCase:
+        return ConfirmResetPasswordUseCase(
+            _jwt_service=jwt_service,
+            _user_repo=user_repo,
+            _user_dm=user_dm,
+            _transactional_manager=transactional_manager,
         )
