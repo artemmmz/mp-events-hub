@@ -96,7 +96,6 @@ class User(BaseAggregate):
     def reset_password_request(
         self,
         email: EmailValue,
-        new_password: str,
     ) -> ConfirmCodeValue:
         confirm_code: str = str(randint(10_000, 99_999))
 
@@ -105,7 +104,7 @@ class User(BaseAggregate):
 
         event = RequestResetPasswordEvent(
             email=email.value,
-            new_password=new_password,
+            confirm_code=confirm_code,
         )
 
         self.register_event(event=event)
