@@ -19,4 +19,4 @@ class ConfirmRegistrationUserEvent(DomainEvent):
 @dataclass(frozen=True)
 class RequestResetPasswordEvent(DomainEvent):
     email: str
-    new_password: str
+    confirm_code: str
