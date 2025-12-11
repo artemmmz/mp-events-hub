@@ -48,7 +48,7 @@ class IUserKvDm(
         self,
         email: EmailValue,
         password: str,
-        ttl: str,
+        ttl: timedelta,
     ) -> None:
         ...
 
