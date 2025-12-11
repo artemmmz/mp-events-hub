@@ -41,12 +41,16 @@ class ResetPasswordUseCase(
 
         confirm_code: ConfirmCodeValue = user.reset_password_request(
             email=email,
-            new_password=command.new_password,
         )
 
         await self._user_dm.save_confirm_code_by_email(
             email=email,
             confirm_code=confirm_code,
+            ttl=command.confirm_code_ttl,
+        )
+        await self._user_dm.save_password_by_email(
+            email=email,
+            password=command.new_password,
             ttl=command.confirm_code_ttl,
         )
 

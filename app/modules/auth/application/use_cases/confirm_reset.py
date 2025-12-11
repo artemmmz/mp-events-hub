@@ -51,8 +51,11 @@ class ConfirmResetPasswordUseCase(
             stored_code=ConfirmCodeValue(confirm_code),
         )
 
+        await self._user_repo.update(user)
+        await self._transactional_manager.commit()
+
         token: JwtTokenValue = self._jwt_service.issue_token(
-            payload={"user_id": user.id.value},
+            payload={"user_id": str(user.id.value)},
         )
 
         return token
