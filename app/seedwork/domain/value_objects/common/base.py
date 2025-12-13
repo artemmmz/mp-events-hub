@@ -25,6 +25,7 @@ class BaseValueObject(ABC):
 
 
 ValueType = TypeVar("ValueType", bound=Any)
+RValueType = TypeVar("RValueType", bound=Any)
 
 
 @dataclass(
@@ -33,7 +34,7 @@ ValueType = TypeVar("ValueType", bound=Any)
 )
 class BaseSimpleValueObject(
     BaseValueObject,
-    Generic[ValueType],
+    Generic[ValueType, RValueType],
     ABC,
 ):
     _value: ValueType
@@ -43,7 +44,7 @@ class BaseSimpleValueObject(
             raise EmptyValueException()
 
     @property
-    def value(self) -> ValueType:
+    def value(self) -> RValueType:
         return self._value
 
     def __eq__(self, other: object) -> bool:
