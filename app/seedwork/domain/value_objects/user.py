@@ -9,7 +9,7 @@ from seedwork.domain.value_objects.validators.lens import len_validate
 
 
 class NameValue(
-    BaseSimpleValueObject[str]):
+    BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         len_validate(
             value=self._value,
@@ -18,7 +18,7 @@ class NameValue(
         )
 
 
-class GroupNumberValue(BaseSimpleValueObject[str]):
+class GroupNumberValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         pattern = r"^\d{3}-\d{3}$"
 
@@ -26,7 +26,7 @@ class GroupNumberValue(BaseSimpleValueObject[str]):
             raise GroupNumberFormatException(group_number=self._value)
 
 
-class EmailValue(BaseSimpleValueObject[str]):
+class EmailValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 

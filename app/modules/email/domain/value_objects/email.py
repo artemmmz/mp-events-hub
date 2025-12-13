@@ -5,7 +5,7 @@ from seedwork.domain.value_objects.common.exceptions import (
 )
 
 
-class SubjectValue(BaseSimpleValueObject[str]):
+class SubjectValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         if len(self._value.strip()) == 0:
             raise EmptyValueException()
@@ -17,7 +17,7 @@ class SubjectValue(BaseSimpleValueObject[str]):
             )
 
 
-class BodyValue(BaseSimpleValueObject[str]):
+class BodyValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         if len(self._value.strip()) == 0:
             raise EmptyValueException()
