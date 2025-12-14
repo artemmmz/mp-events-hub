@@ -14,3 +14,10 @@ class IS3Client(Protocol):
         content_type: ContentType,
     ) -> UUID:
         ...
+
+    async def delete(
+        self,
+        key: UUID,
+        bucket: Bucket,
+    ) -> None:
+        ...

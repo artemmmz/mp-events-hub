@@ -89,16 +89,19 @@ class S3AiobotoClient:
 
     async def delete(
         self,
-        key: str,
-        bucket: Optional[str] = None
+        key: UUID,
+        bucket: Bucket,
     ) -> None:
         """Delete an object from S3.
 
         Args:
             key: Object key
-            bucket: Bucket name (optional, uses default if not provided)
+            bucket: Bucket name
         """
-        return await self.client.delete_object(Bucket=bucket, Key=key)
+        return await self.client.delete_object(
+            Bucket=bucket.value,
+            Key=str(key),
+        )
 
     async def generate_upload_url(
         self,

@@ -9,16 +9,16 @@ from seedwork.infra.s3.support_obj import AsyncReadable
 
 
 @dataclass
-class ImageMetadata:
+class ImageMetadataSchema:
     width: int
     height: int
-    format: str
+    content_type: str
 
 
 class ImageMetadataService:
     """Работает с image and gif"""
 
-    async def get(self, file: AsyncReadable) -> ImageMetadata:
+    async def get(self, file: AsyncReadable) -> ImageMetadataSchema:
         header: bytes = await self._get_header(file=file)
         image: ImageFile = await asyncio.to_thread(
             self._get_image,
@@ -26,14 +26,14 @@ class ImageMetadataService:
         )
 
         width, height = image.size
-        image_format: str = image.format
+        content_type: str = image.format
 
         await file.seek(0)
 
-        resolution = ImageMetadata(
+        resolution = ImageMetadataSchema(
             width=width,
             height=height,
-            format=image_format,
+            content_type=content_type,
         )
         return resolution
 
