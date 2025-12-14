@@ -37,7 +37,7 @@ class Event(BaseAggregate):
     scheduled_at: ScheduledAtValue
     address: AddressValue | None
     description: DescriptionValue
-    image_url: S3IdValue
+    image_id: S3IdValue
 
     @classmethod
     def create(
@@ -46,7 +46,7 @@ class Event(BaseAggregate):
         title: str,
         scheduled_at: datetime,
         description: str,
-        image_uid: UUID,
+        image_id: UUID,
         city: str | None,
         street: str | None,
         building_number: int | None,
@@ -92,7 +92,7 @@ class Event(BaseAggregate):
             scheduled_at=ScheduledAtValue(scheduled_at),
             address=address_vo,
             description=DescriptionValue(description),
-            image_url=S3IdValue(image_uid),
+            image_id=S3IdValue(image_id),
         )
 
     def delete(
@@ -121,7 +121,7 @@ class Event(BaseAggregate):
         title: str | None,
         scheduled_at: datetime | None,
         description: str | None,
-        image_url: str | None,
+        image_id: str | None,
         city: str | None,
         street: str | None,
         building_number: int | None,
@@ -155,8 +155,8 @@ class Event(BaseAggregate):
         if description is not EMPTY:
             self.description = DescriptionValue(description)
 
-        if image_url is not EMPTY:
-            self.image_url = S3IdValue(image_url)
+        if image_id is not EMPTY:
+            self.image_id = S3IdValue(image_id)
 
         if any(arg is not EMPTY for arg in [city, street, building_number, block, auditorium]):
 
