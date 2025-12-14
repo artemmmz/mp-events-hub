@@ -8,5 +8,5 @@ from seedwork.domain.value_objects.common.base import BaseSimpleValueObject
     frozen=True,
     slots=True,
 )
-class EntityIdValue(BaseSimpleValueObject[Any]):
+class EntityIdValue(BaseSimpleValueObject[Any, Any]):
     pass

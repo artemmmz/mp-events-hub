@@ -24,7 +24,7 @@ class AddressValue(BaseCompositeValueObject):
         ...
 
 
-class CityValue(BaseSimpleValueObject[str]):
+class CityValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         len_validate(
             value=self._value,
@@ -33,7 +33,7 @@ class CityValue(BaseSimpleValueObject[str]):
         )
 
 
-class StreetValue(BaseSimpleValueObject[str]):
+class StreetValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         len_validate(
             value=self._value,
@@ -52,12 +52,12 @@ class BuildingValue(BaseCompositeValueObject):
         pass
 
 
-class BuildingNumberValue(BaseSimpleValueObject[int]):
+class BuildingNumberValue(BaseSimpleValueObject[int, int]):
     def validate(self) -> None:
         is_positive(value=self._value)
 
 
-class BuildingBlockValue(BaseSimpleValueObject[str]):
+class BuildingBlockValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         value = self._value.strip()
 
@@ -67,7 +67,7 @@ class BuildingBlockValue(BaseSimpleValueObject[str]):
             raise InvalidBuildingBlockException(value=value)
 
 
-class AuditoriumValue(BaseSimpleValueObject[str]):
+class AuditoriumValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         value = self._value.strip()
 

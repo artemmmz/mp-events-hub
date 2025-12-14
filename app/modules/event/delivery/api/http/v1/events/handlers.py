@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from dishka.integrations.fastapi import (
@@ -5,7 +6,7 @@ from dishka.integrations.fastapi import (
     FromDishka,
     inject,
 )
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, Form
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -37,17 +38,15 @@ from modules.event.application.use_cases.event.update import (
     UpdateEventCommand,
 )
 from modules.event.delivery.api.http.v1.events.schemas import (
-    CreateEventInSchema,
     CreateEventOutSchema,
     RegisterForEventOutSchema,
-    UpdateEventInSchema,
     UpdateEventOutSchema,
 )
 from modules.event.domain.aggregate.event import Event
 from modules.event.domain.aggregate.event_registration import EventRegistration
 from seedwork.delivery.api.http.schemas import ErrorSchema
 from seedwork.delivery.jwt_utils import get_user_id
-
+from seedwork.domain.marker import EMPTY
 
 register_router = APIRouter(
     prefix="/events",
@@ -80,20 +79,30 @@ router.include_router(register_router)
 )
 @inject
 async def create_event(
-    schema: CreateEventInSchema,
     use_case: FromDishka[CreateEventUseCase],
+    file: UploadFile,
+    title: str = Form(...),
+    scheduled_at: datetime = Form(...),
+    description: str = Form(...),
+    city: str | None = Form(None),
+    street: str | None = Form(None),
+    building_number: int | None = Form(None),
+    block: str | None = Form(None),
+    auditorium: str | None = Form(None),
     user_id: UUID = Depends(get_user_id),
 ) -> CreateEventOutSchema:
     command = CreateEventCommand(
         user_id=user_id,
-        title=schema.title,
-        scheduled_at=schema.scheduled_at,
-        description=schema.description,
-        city=schema.city,
-        street=schema.street,
-        building_number=schema.building_number,
-        block=schema.block,
-        auditorium=schema.auditorium,
+        title=title,
+        scheduled_at=scheduled_at,
+        description=description,
+        city=city,
+        street=street,
+        building_number=building_number,
+        block=block,
+        auditorium=auditorium,
+        image_fileobject=file,
+        image_content_type=file.content_type,
     )
 
     event: Event = await use_case.act(command)
@@ -143,22 +152,33 @@ async def delete_event(
 )
 @inject
 async def update_event(
-    event_id: UUID,
-    schema: UpdateEventInSchema,
     use_case: FromDishka[UpdateEventUseCase],
+    event_id: UUID,
+    image: UploadFile | None,
+    title: str | None | EMPTY = Form(EMPTY),
+    scheduled_at: str | None | EMPTY = Form(EMPTY),
+    description: str | None | EMPTY = Form(EMPTY),
+    city: str | None | EMPTY = Form(EMPTY),
+    street: str | None | EMPTY = Form(EMPTY),
+    building_number: str | None | EMPTY = Form(EMPTY),
+    block: str | None | EMPTY = Form(EMPTY),
+    auditorium: str | None | EMPTY = Form(EMPTY),
     user_id: UUID = Depends(get_user_id),
 ) -> UpdateEventOutSchema:
+
     command = UpdateEventCommand(
         event_id=event_id,
         user_id=user_id,
-        title=schema.title,
-        scheduled_at=schema.scheduled_at,
-        description=schema.description,
-        city=schema.city,
-        street=schema.street,
-        building_number=schema.building_number,
-        block=schema.block,
-        auditorium=schema.auditorium,
+        title=title,
+        scheduled_at=scheduled_at,
+        description=description,
+        city=city,
+        street=street,
+        building_number=building_number,
+        block=block,
+        auditorium=auditorium,
+        image_fileobject=image,
+        image_content_type=image.content_type if image else None,
     )
 
     event: Event = await use_case.act(command)

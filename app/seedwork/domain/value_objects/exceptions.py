@@ -29,3 +29,12 @@ class RoleValueException(ValueException):
     @property
     def message(self) -> str:
         return f"Недопустимое значение роли: {self.value}"
+
+
+@dataclass
+class MediaTypeNotExistException(ValueException):
+    media_type: str
+
+    @property
+    def message(self) -> str:
+        return f"Media type: {self.media_type} does not exist"

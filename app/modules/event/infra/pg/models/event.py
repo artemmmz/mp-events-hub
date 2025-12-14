@@ -26,6 +26,7 @@ class EventOrm(
 
     title: Mapped[str]
     description: Mapped[str]
+    image_uid: Mapped[UUID]
     scheduled_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
     )

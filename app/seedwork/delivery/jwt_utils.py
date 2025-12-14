@@ -8,16 +8,15 @@ from bootstrap.settings import get_settings
 
 
 def get_user_id(
-    access_token_cookie: str | None = Cookie(default=None),
+    access_token: str | None = Cookie(default=None),
     authorization: str | None = Header(default=None),
 ) -> UUID:
     settings = get_settings()
-
     token = None
 
     # Prefer cookie token
-    if access_token_cookie:
-        token = access_token_cookie
+    if access_token:
+        token = access_token
 
     # Fallback to Authorization header
     elif authorization and authorization.startswith("Bearer "):

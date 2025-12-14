@@ -6,7 +6,7 @@ from seedwork.domain.value_objects.common.base import (
 from seedwork.domain.value_objects.validators.lens import len_validate
 
 
-class TitleValue(BaseSimpleValueObject[str]):
+class TitleValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         len_validate(
             value=self._value,
@@ -15,12 +15,12 @@ class TitleValue(BaseSimpleValueObject[str]):
         )
 
 
-class ScheduledAtValue(BaseSimpleValueObject[datetime]):
+class ScheduledAtValue(BaseSimpleValueObject[datetime, datetime]):
     def validate(self) -> None:
         pass
 
 
-class DescriptionValue(BaseSimpleValueObject[str]):
+class DescriptionValue(BaseSimpleValueObject[str, str]):
     def validate(self) -> None:
         len_validate(
             value=self._value,

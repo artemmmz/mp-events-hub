@@ -91,6 +91,19 @@ class EmailSettings(BaseSettings):
     password: str = Field(default="", alias="EMAIL__PASSWORD")
 
 
+class MinioSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
+    login: str = Field(default="login", alias="MINIO__LOGIN")
+    password: str = Field(default="password", alias="MINIO__PASSWORD")
+    aws_access_key_id: str = Field(default="id", alias="MINIO__AWS_ACCESS_KEY_ID")
+    aws_secret_access_key: str = Field(default="key", alias="MINIO__AWS_SECRET_ACCESS_KEY")
+    endpoint_url: str = Field(default="endpoint", alias="MINIO__ENDPOINT_URL")
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
@@ -100,6 +113,7 @@ class Settings(BaseSettings):
     pg: PgSettings = PgSettings()
     rmq: RmqSettings = RmqSettings()
     redis: RedisSettings = RedisSettings()
+    minio: MinioSettings = MinioSettings()
     auth: AuthSettings = AuthSettings()
     email: EmailSettings = EmailSettings()
 

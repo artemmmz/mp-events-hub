@@ -6,6 +6,7 @@ APP = docker_compose/app.yaml
 DB = docker_compose/pg.yaml
 RMQ = docker_compose/rmq.yaml
 REDIS = docker_compose/redis.yaml
+MINIO = docker_compose/minio.yaml
 
 .PHONY: app
 app:
@@ -43,3 +44,13 @@ redis:
 .PHONY: redis-down
 redis-down:
 	${DC} -f ${REDIS} ${ENV} down
+
+
+.PHONY: minio
+minio:
+	${DC} -f ${MINIO} ${ENV} up
+
+
+.PHONY: minio-down
+minio-down:
+	${DC} -f ${MINIO} ${ENV} down
