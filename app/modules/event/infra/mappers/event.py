@@ -8,6 +8,7 @@ from modules.event.domain.aggregate.event import Event
 from modules.event.infra.mappers.address import AddressMapper
 from seedwork.domain.mapper import BaseMapper
 from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.s3 import S3IdValue
 
 
 @dataclass
@@ -26,6 +27,7 @@ class EventMapper(BaseMapper):
             updated_at=event.updated_at,
             title=event.title.value,
             description=event.description.value,
+            image_uid=event.image_id.value,
             scheduled_at=event.scheduled_at.value,
             created_by_user_id=event.created_by_user_id.value,
             address=address_orm,
@@ -48,4 +50,5 @@ class EventMapper(BaseMapper):
             scheduled_at=ScheduledAtValue(event_orm.scheduled_at),
             address=address_vo,
             description=DescriptionValue(event_orm.description),
+            image_id=S3IdValue(event_orm.image_uid),
         )
