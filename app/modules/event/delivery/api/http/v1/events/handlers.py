@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from dishka.integrations.fastapi import (
@@ -5,7 +6,7 @@ from dishka.integrations.fastapi import (
     FromDishka,
     inject,
 )
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, Form
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -37,7 +38,6 @@ from modules.event.application.use_cases.event.update import (
     UpdateEventCommand,
 )
 from modules.event.delivery.api.http.v1.events.schemas import (
-    CreateEventInSchema,
     CreateEventOutSchema,
     RegisterForEventOutSchema,
     UpdateEventInSchema,
@@ -80,20 +80,30 @@ router.include_router(register_router)
 )
 @inject
 async def create_event(
-    schema: CreateEventInSchema,
     use_case: FromDishka[CreateEventUseCase],
+    file: UploadFile,
+    title: str = Form(...),
+    scheduled_at: datetime = Form(...),
+    description: str = Form(...),
+    city: str | None = Form(None),
+    street: str | None = Form(None),
+    building_number: int | None = Form(None),
+    block: str | None = Form(None),
+    auditorium: str | None = Form(None),
     user_id: UUID = Depends(get_user_id),
 ) -> CreateEventOutSchema:
     command = CreateEventCommand(
         user_id=user_id,
-        title=schema.title,
-        scheduled_at=schema.scheduled_at,
-        description=schema.description,
-        city=schema.city,
-        street=schema.street,
-        building_number=schema.building_number,
-        block=schema.block,
-        auditorium=schema.auditorium,
+        title=title,
+        scheduled_at=scheduled_at,
+        description=description,
+        city=city,
+        street=street,
+        building_number=building_number,
+        block=block,
+        auditorium=auditorium,
+        image_fileobject=file,
+        image_content_type=file.content_type,
     )
 
     event: Event = await use_case.act(command)
