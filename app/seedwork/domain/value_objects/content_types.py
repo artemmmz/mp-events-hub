@@ -5,7 +5,7 @@ from seedwork.domain.value_objects.common.base import BaseSimpleValueObject
 from seedwork.domain.value_objects.exceptions import MediaTypeNotExistException
 
 
-class MediaType(Enum):
+class ContentType(Enum):
     JPEG = "image/jpeg"
     PNG = "image/png"
     GIF = "image/gif"
@@ -13,13 +13,13 @@ class MediaType(Enum):
 
 
 @dataclass(frozen=True)
-class MediaTypeValue(BaseSimpleValueObject[str, MediaType]):
+class MediaTypeValue(BaseSimpleValueObject[str, ContentType]):
     def validate(self) -> None:
         try:
-            MediaType(self.value)
+            ContentType(self.value)
         except ValueError:
             raise MediaTypeNotExistException(media_type=self._value)
 
-    def as_generic_type(self) -> MediaType:
-        media_type = MediaType(self.value)
+    def as_generic_type(self) -> ContentType:
+        media_type = ContentType(self.value)
         return media_type
