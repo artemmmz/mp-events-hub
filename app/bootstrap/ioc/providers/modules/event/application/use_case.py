@@ -48,11 +48,13 @@ class UseCaseEventProvider(Provider):
     @provide
     def delete_event(
         self,
+        s3_client: IS3Client,
         event_repo: IEventRepository,
         user_repo: IUserRepository,
         transactional_manager: ITransactionManager,
     ) -> DeleteEventUseCase:
         return DeleteEventUseCase(
+            _s3_client=s3_client,
             _event_repo=event_repo,
             _user_repo=user_repo,
             _transactional_manager=transactional_manager,
@@ -61,11 +63,17 @@ class UseCaseEventProvider(Provider):
     @provide
     def update_event(
         self,
+        s3_client: IS3Client,
+        image_metadata_service: ImageMetadataService,
+        event_image_validator: EventImageValidator,
         event_repo: IEventRepository,
         user_repo: IUserRepository,
         transactional_manager: ITransactionManager,
     ) -> UpdateEventUseCase:
         return UpdateEventUseCase(
+            _s3_client=s3_client,
+            _image_metadata_service=image_metadata_service,
+            _event_image_validator=event_image_validator,
             _event_repo=event_repo,
             _user_repo=user_repo,
             _transactional_manager=transactional_manager,

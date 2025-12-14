@@ -6,7 +6,7 @@ from dishka import Provider, Scope, provide
 
 from bootstrap.settings import Settings
 from seedwork.application.interface.s3.client import IS3Client
-from seedwork.infra.s3.adc.client import S3AiobotoClient
+from seedwork.infra.s3.impls.btcore import S3AiobotoClient
 from seedwork.infra.s3.services.image_metadata import ImageMetadataService
 
 
