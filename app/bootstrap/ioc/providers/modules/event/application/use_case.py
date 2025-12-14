@@ -10,11 +10,14 @@ from modules.event.application.use_cases.event.delete import DeleteEventUseCase
 from modules.event.application.use_cases.event.register_user import RegisterForEventUseCase
 from modules.event.application.use_cases.event.unregister_user import UnregisterForEventUseCase
 from modules.event.application.use_cases.event.update import UpdateEventUseCase
+from modules.event.application.validators.event import EventImageValidator
 from modules.event.domain.repository.event import IEventRepository
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
 from modules.event.domain.repository.user import IUserRepository
 from modules.event.domain.services.event_registration import EventRegistrationService
+from seedwork.application.interface.s3.client import IS3Client
 from seedwork.domain.services.authorization import AuthorizationService
+from seedwork.infra.s3.services.image_metadata import ImageMetadataService
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 
@@ -25,14 +28,20 @@ class UseCaseEventProvider(Provider):
     def create_event(
         self,
         authorization_service: AuthorizationService,
+        image_meta_service: ImageMetadataService,
         user_repo: IUserRepository,
         event_repo: IEventRepository,
+        s3_client: IS3Client,
+        event_image_validator: EventImageValidator,
         transactional_manager: ITransactionManager,
     ) -> CreateEventUseCase:
         return CreateEventUseCase(
             _authorization_service=authorization_service,
+            _image_meta_service=image_meta_service,
             _user_repo=user_repo,
             _event_repo=event_repo,
+            _s3_client=s3_client,
+            _event_image_validator=event_image_validator,
             _transactional_manager=transactional_manager,
         )
 

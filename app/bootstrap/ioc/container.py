@@ -13,6 +13,8 @@ from bootstrap.ioc.providers.infra import (
     EventBusProvider,
     FastStreamProvider,
     RedisProvider,
+    S3ServicesProvider,
+    S3Provider,
 )
 from bootstrap.ioc.providers.modules.auth import (
     RulesAuthProvider,
@@ -32,6 +34,7 @@ from bootstrap.ioc.providers.modules.event import (
     RuleDomainProvider,
     ServiceDomainEventProvider,
     UseCaseEventProvider,
+    ValidatorProvider,
     DmEventProvider,
     RepositoryEventProvider,
 )
@@ -47,6 +50,8 @@ DEV_PROVIDERS: list[Provider] = [
     EventBusProvider(),
     FastStreamProvider(),
     RedisProvider(),
+    S3ServicesProvider(),
+    S3Provider(),
     RulesAuthProvider(),
     RepositoryAuthProvider(),
     MapperAuthProvider(),
@@ -60,6 +65,7 @@ DEV_PROVIDERS: list[Provider] = [
     RuleDomainProvider(),
     ServiceDomainEventProvider(),
     UseCaseEventProvider(),
+    ValidatorProvider(),
     DmEventProvider(),
     RepositoryEventProvider(),
     TransactionManagerProvider(),

@@ -1,4 +1,7 @@
-from .application import UseCaseEventProvider
+from .application import (
+    UseCaseEventProvider,
+    ValidatorProvider,
+)
 from .domain import (
     RuleDomainProvider,
     ServiceDomainEventProvider,
@@ -12,6 +15,7 @@ from .infra import (
 
 __all__ = (
     "UseCaseEventProvider",
+    "ValidatorProvider",
     "RuleDomainProvider",
     "ServiceDomainEventProvider",
     "DmEventProvider",
