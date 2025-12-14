@@ -27,7 +27,7 @@ from seedwork.domain.events.events import DeleteEventEvent
 from seedwork.domain.marker import EMPTY
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.role import RoleValue
-from seedwork.domain.value_objects.s3 import S3Value
+from seedwork.domain.value_objects.s3 import S3IdValue
 
 
 @dataclass
@@ -37,7 +37,7 @@ class Event(BaseAggregate):
     scheduled_at: ScheduledAtValue
     address: AddressValue | None
     description: DescriptionValue
-    image_url: S3Value
+    image_url: S3IdValue
 
     @classmethod
     def create(
@@ -46,7 +46,7 @@ class Event(BaseAggregate):
         title: str,
         scheduled_at: datetime,
         description: str,
-        image_url: str,
+        image_uid: UUID,
         city: str | None,
         street: str | None,
         building_number: int | None,
@@ -92,7 +92,7 @@ class Event(BaseAggregate):
             scheduled_at=ScheduledAtValue(scheduled_at),
             address=address_vo,
             description=DescriptionValue(description),
-            image_url=S3Value(image_url),
+            image_url=S3IdValue(image_uid),
         )
 
     def delete(
@@ -156,7 +156,7 @@ class Event(BaseAggregate):
             self.description = DescriptionValue(description)
 
         if image_url is not EMPTY:
-            self.image_url = S3Value(image_url)
+            self.image_url = S3IdValue(image_url)
 
         if any(arg is not EMPTY for arg in [city, street, building_number, block, auditorium]):
 
