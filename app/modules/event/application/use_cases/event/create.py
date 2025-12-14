@@ -17,7 +17,7 @@ from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.value_objects.s3 import Bucket
 from seedwork.infra.s3.services.image_metadata import (
     ImageMetadataService,
-    ImageMetadata,
+    ImageMetadataSchema,
 )
 from seedwork.infra.s3.support_obj import AsyncFileStreamer, AsyncReadable
 from seedwork.infra.transaction_manager.base import ITransactionManager
@@ -60,7 +60,7 @@ class CreateEventUseCase(
             minimum_role=RoleValue.ORGANIZER,
         )
 
-        image_metadata: ImageMetadata = await self._image_meta_service.get(
+        image_metadata: ImageMetadataSchema = await self._image_meta_service.get(
             file=command.image_fileobject,
         )
         await self._event_image_validator.validate(
@@ -82,7 +82,7 @@ class CreateEventUseCase(
             title=command.title,
             scheduled_at=command.scheduled_at,
             description=command.description,
-            image_uid=image_uid,
+            image_id=image_uid,
             city=command.city,
             street=command.street,
             building_number=command.building_number,
